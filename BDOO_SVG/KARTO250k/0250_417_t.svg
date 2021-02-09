@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="-15.0000072886108 -24.130435522033 30 48.260871044066" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmsvgsym="http://www.intergraph.com/GeoMedia/svgsym">
+  <!-- Creator: SVG Document for Symbols-->
+  <polyline points="-15.0000061908591,-24.1304319989067 -15.0000061908591,24.1304335641239" style="  stroke-width: 0.00130434771791975; stroke-linecap: round;stroke: #ffffff; fill: none; " xmlns="http://www.w3.org/2000/svg" />
+  <polyline points="-15.0000061908591,24.1304335641239 14.9999913212951,24.1304335641239" style="  stroke-width: 0.00130434771791975; stroke-linecap: round;stroke: #ffffff; fill: none; " xmlns="http://www.w3.org/2000/svg" />
+  <polyline points="14.9999913212951,24.1304335641239 14.9999913212951,-24.1304319989067" style="  stroke-width: 0.00130434771791975; stroke-linecap: round;stroke: #ffffff; fill: none; " xmlns="http://www.w3.org/2000/svg" />
+  <polyline points="14.9999913212951,-24.1304319989067 -15.0000061908591,-24.1304319989067" style="  stroke-width: 0.00130434771791975; stroke-linecap: round;stroke: #ffffff; fill: none; " xmlns="http://www.w3.org/2000/svg" />
+  <g id="ComplexString2d_1726" style=" fill-rule: evenodd; stroke-width: 0;stroke: #ffffff; fill: #ffffff; " xmlns="http://www.w3.org/2000/svg">
+    <path d="M -15.0000061908591 24.1304335641239 L 14.9999913212951 24.1304335641239 L 14.9999913212951 -24.1304319989067 L -15.0000061908591 -24.1304319989067 L -15.0000061908591 24.1304335641239 " />
+  </g>
+</svg>

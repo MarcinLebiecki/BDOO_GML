@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="-15.0000090393064 -40.1470569141572 30 41.4705862957103" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmsvgsym="http://www.intergraph.com/GeoMedia/svgsym">
+  <!-- Creator: SVG Document for Symbols-->
+  <path id="LineString2d_1626" style=" stroke-width: 0.00176470568977221;stroke: #000000; fill: none; " d="M -15.0000080689451 1.32352926732916 L -6.17647962008403 -40.1470544423178 L 6.17646020832145 -40.1470544423178 L 14.9999886571825 1.32352926732916 L -15.0000080689451 1.32352926732916 " xmlns="http://www.w3.org/2000/svg" />
+  <g id="ComplexString2d_1627" style=" fill-rule: evenodd; stroke-width: 0;stroke: #000000; fill: #000000; " xmlns="http://www.w3.org/2000/svg">
+    <path d="M -15.0000080689451 1.32352926732916 L -6.17647962008403 -40.1470544423178 L 6.17646020832145 -40.1470544423178 L 14.9999886571825 1.32352926732916 L -15.0000080689451 1.32352926732916 " />
+  </g>
+  <path id="LineString2d_1628" style=" stroke-width: 0.00176470568977221;stroke: #ffffff; fill: none; " d="M -11.7304933669207 -1.32352926732916 L -4.03337285395933 -37.4999959076595 L 4.03339226572192 -37.4999959076595 L 11.7305127786833 -1.32352926732916 L -11.7304933669207 -1.32352926732916 " xmlns="http://www.w3.org/2000/svg" />
+  <g id="ComplexString2d_1629" style=" fill-rule: evenodd; stroke-width: 0;stroke: #ffffff; fill: #ffffff; " xmlns="http://www.w3.org/2000/svg">
+    <path d="M -11.7304933669207 -1.32352926732916 L -4.03337285395933 -37.4999959076595 L 4.03339226572192 -37.4999959076595 L 11.7305127786833 -1.32352926732916 L -11.7304933669207 -1.32352926732916 " />
+  </g>
+</svg>
