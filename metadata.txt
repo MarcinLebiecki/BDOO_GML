@@ -6,7 +6,7 @@
 name=BDOO_GML
 qgisMinimumVersion=3.0
 description=This tool can be used to import BDOO GML files and adds them in the QGIS canvas. Also, layes can be symbolized to be similar to the map in 1:250 000 scale.
-version=1.0
+version=1.2.2
 author=Marcin Lebiecki - Główny Urząd Geodezji I Kartografii
 email=marcin.lebiecki@gugik.gov.pl
 
@@ -20,7 +20,7 @@ repository=https://github.com/MarcinLebiecki/BDOO_GML.git
 
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
-changelog= 
+changelog= Bug fixes
 
 # Tags are comma separated with spaces allowed
 tags=python, BDOO, GML
