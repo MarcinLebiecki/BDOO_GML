@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/BDOO_GML_loader" >
-        <file>BDOO_GML_loader.png</file>
-    </qresource>
-</RCC>
