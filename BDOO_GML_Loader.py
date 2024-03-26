@@ -8,7 +8,7 @@
                               -------------------
         begin                : 2020-07-20
         git sha              : $Format:%H$
-        copyright            : (C) 2020 by Marcin Lebiecki / Główny Urząd Geodezji i Kartografii
+        copyright            : (C) 2024 by Marcin Lebiecki / Główny Urząd Geodezji i Kartografii
         email                : marcin.lebiecki@gugik.gov.pl
  ***************************************************************************/
 
@@ -219,18 +219,14 @@ class BDOO_GML_Loader:
             return
         
         for file in os.listdir(folder_path):
-            if (file.endswith(".xml") or file.endswith(".shp")) and re.match("PL\.PZG[i|I]K\.201\.\d{2}(__OT_)", file):
+            if (file.endswith(".gml") or file.endswith(".shp")) and re.match("PL\.PZG[i|I]K\.201\.\d{2}(__OT_)", file):
                     result = True
                     przestrzen_nazw = str(re.split("__", file)[0])
-                    if file.endswith(".xml"):
-                        formatPliku = "xml"
-
+                    if file.endswith(".gml"):
+                        formatPliku = "gml"
+        
         if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            
             qmlPath = Path(QgsApplication.qgisSettingsDirPath())/Path("python/plugins/BDOO_GML_Loader/BDOO_QML/")
-            gfsPath = Path(QgsApplication.qgisSettingsDirPath())/Path("python/plugins/BDOO_GML_Loader/BDOO_GFS/")
             svgPluginPath = Path(QgsApplication.qgisSettingsDirPath())/Path("python/plugins/BDOO_GML_Loader/BDOO_SVG/KARTO250k/")
             svgQGISpath = Path(QgsApplication.qgisSettingsDirPath())/Path("SVG/")
             
@@ -242,100 +238,22 @@ class BDOO_GML_Loader:
             
             progressMessageBar = iface.messageBar().createMessage("Postęp importowania BDOO...")
             progress = QProgressBar()
-            progress.setMaximum(69)
+            progress.setMaximum(33)
             progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
             progressMessageBar.layout().addWidget(progress)
             iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
-
+            
             teryt = przestrzen_nazw[-2:]
             nazwa_wojewodztwa = wojewodztwo[teryt]
             groupName = 'BDOO WOJEWÓDZTWO '+nazwa_wojewodztwa
             root = QgsProject.instance().layerTreeRoot()
             group = root.addGroup(groupName)
             group.setExpanded(False)
-            if formatPliku=="xml":
-                groupSlowniki = group.addGroup(przestrzen_nazw+' wykazy')
-                groupSlowniki.setExpanded(False)
             groupNapisy = group.addGroup(przestrzen_nazw+' napisy')
             groupNapisy.setExpanded(False)
             groupPunktowe = group.addGroup(przestrzen_nazw+' znaki punktowe')
             groupPunktowe.setExpanded(False)
-
-
-            if os.path.exists(path+przestrzen_nazw+'__OT_SzlakDrogowy.'+formatPliku):                
-                OT_SzlakDrogowy = QgsVectorLayer(path+przestrzen_nazw+"__OT_SzlakDrogowy."+formatPliku, przestrzen_nazw+"__OT_SzlakDrogowy","ogr")
-                if OT_SzlakDrogowy.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_SzlakDrogowy, False)
-                    groupSlowniki.addLayer(OT_SzlakDrogowy)
-                else:
-                    OT_SzlakDrogowy = None
-            progress.setValue(1)
-            if os.path.exists(path+przestrzen_nazw+'__OT_Port.'+formatPliku):
-                OT_Port = QgsVectorLayer(path+przestrzen_nazw+"__OT_Port."+formatPliku, przestrzen_nazw+"__OT_Port","ogr")
-                if OT_Port.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_Port, False)
-                    groupSlowniki.addLayer(OT_Port)
-                else:
-                    OT_Port = None
-            progress.setValue(2)
-            if os.path.exists(path+przestrzen_nazw+'__OT_Lotnisko.'+formatPliku):
-                #if formatPliku=="xml":
-                #    copyfile(gfsPath/Path("OT_Lotnisko.gfs"), path+przestrzen_nazw+'__OT_Lotnisko.gfs')
-                OT_Lotnisko = QgsVectorLayer(path+przestrzen_nazw+"__OT_Lotnisko."+formatPliku, przestrzen_nazw+"__OT_Lotnisko","ogr")
-                if OT_Lotnisko.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_Lotnisko, False)
-                    groupSlowniki.addLayer(OT_Lotnisko)
-                else:
-                    OT_Lotnisko = None
-            progress.setValue(3)
-            if os.path.exists(path+przestrzen_nazw+'__OT_LiniaKolejowa.'+formatPliku):
-                OT_LiniaKolejowa = QgsVectorLayer(path+przestrzen_nazw+"__OT_LiniaKolejowa."+formatPliku, przestrzen_nazw+"__OT_LiniaKolejowa","ogr")
-                if OT_LiniaKolejowa.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_LiniaKolejowa, False)
-                    groupSlowniki.addLayer(OT_LiniaKolejowa)
-                else:
-                    OT_LiniaKolejowa = None
-            progress.setValue(4)
-            if os.path.exists(path+przestrzen_nazw+'__OT_Kopalnia.'+formatPliku):
-                OT_Kopalnia = QgsVectorLayer(path+przestrzen_nazw+"__OT_Kopalnia."+formatPliku, przestrzen_nazw+"__OT_Kopalnia","ogr")
-                if OT_Kopalnia.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_Kopalnia, False)
-                    groupSlowniki.addLayer(OT_Kopalnia)
-                else:
-                    OT_Kopalnia = None
-            progress.setValue(5)
-            if os.path.exists(path+przestrzen_nazw+'__OT_Elektrownia.'+formatPliku):
-                OT_Elektrownia = QgsVectorLayer(path+przestrzen_nazw+"__OT_Elektrownia."+formatPliku, przestrzen_nazw+"__OT_Elektrownia","ogr")
-                if OT_Elektrownia.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_Elektrownia, False)
-                    groupSlowniki.addLayer(OT_Elektrownia)
-                else:
-                    OT_Elektrownia = None
-            progress.setValue(6)
-            if os.path.exists(path+przestrzen_nazw+'__OT_Ciek.'+formatPliku):
-                OT_Ciek = QgsVectorLayer(path+przestrzen_nazw+"__OT_Ciek."+formatPliku, przestrzen_nazw+"__OT_Ciek","ogr")
-                if OT_Ciek.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_Ciek, False)
-                    groupSlowniki.addLayer(OT_Ciek)
-                else:
-                    OT_Ciek = None
-            progress.setValue(7)
-            if os.path.exists(path+przestrzen_nazw+'__OT_ZbiornikWodny.'+formatPliku):
-                OT_ZbiornikWodny = QgsVectorLayer(path+przestrzen_nazw+"__OT_ZbiornikWodny."+formatPliku, przestrzen_nazw+"__OT_ZbiornikWodny","ogr")
-                if OT_ZbiornikWodny.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_ZbiornikWodny, False)
-                    groupSlowniki.addLayer(OT_ZbiornikWodny)
-                else:
-                    OT_ZbiornikWodny = None
-            progress.setValue(8)
-            if os.path.exists(path+przestrzen_nazw+'__OT_WezelKolejowy.'+formatPliku):
-                OT_WezelKolejowy = QgsVectorLayer(path+przestrzen_nazw+"__OT_WezelKolejowy."+formatPliku, przestrzen_nazw+"__OT_WezelKolejowy","ogr")
-                if OT_WezelKolejowy.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_WezelKolejowy, False)
-                    groupSlowniki.addLayer(OT_WezelKolejowy)
-                else:
-                    OT_WezelKolejowy = None
-            progress.setValue(9)
+            
             if os.path.exists(path+przestrzen_nazw+'__OT_ADMS_P.'+formatPliku):
                 copyfile(qmlPath/Path("OT_ADMS_P__nazwy_miejscowosci.qml"), path+przestrzen_nazw+'__nazwy_miejscowosci.qml')
                 nazwy_miejscowosci = QgsVectorLayer(path+przestrzen_nazw+"__OT_ADMS_P."+formatPliku, przestrzen_nazw+"__nazwy miejscowości","ogr")
@@ -347,7 +265,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     nazwy_miejscowosci = None
-            progress.setValue(10)
+            progress.setValue(1)
             if os.path.exists(path+przestrzen_nazw+'__OT_SKDR_L.'+formatPliku):
                 copyfile(qmlPath/Path("OT_SKDR_L__szlaki_drogowe.qml"), path+przestrzen_nazw+'__szlaki_drogowe.qml')
                 szlaki_drogowe = QgsVectorLayer(path+przestrzen_nazw+"__OT_SKDR_L."+formatPliku, przestrzen_nazw+"__szlaki drogowe","ogr")
@@ -359,10 +277,8 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     szlaki_drogowe = None
-            progress.setValue(11)            
+            progress.setValue(2)
             if os.path.exists(path+przestrzen_nazw+'__OT_SWRS_L.'+formatPliku):
-                if formatPliku=="xml":
-                    copyfile(gfsPath/Path("OT_SWRS_L.gfs"), path+przestrzen_nazw+'__OT_SWRS_L.gfs')
                 copyfile(qmlPath/Path("OT_SWRS_L__nazwy_rzek.qml"), path+przestrzen_nazw+'__nazwy_rzek.qml')
                 nazwy_rzek = QgsVectorLayer(path+przestrzen_nazw+"__OT_SWRS_L."+formatPliku, przestrzen_nazw+"__nazwy rzek","ogr")
                 if nazwy_rzek.featureCount()>0:
@@ -373,10 +289,8 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     nazwy_rzek = None
-            progress.setValue(12)
+            progress.setValue(3)
             if os.path.exists(path+przestrzen_nazw+'__OT_PTWP_A.'+formatPliku):
-                if formatPliku=="xml":
-                    copyfile(gfsPath/Path("OT_PTWP_A.gfs"), path+przestrzen_nazw+'__OT_PTWP_A.gfs')
                 copyfile(qmlPath/Path("OT_PTWP_A__nazwy_wod_powierzchniowych.qml"), path+przestrzen_nazw+'__nazwy_wod_powierzchniowych.qml')
                 nazwy_wod_powierzchniowych = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTWP_A."+formatPliku, przestrzen_nazw+"__nazwy wód powierzchniowych","ogr")
                 if nazwy_wod_powierzchniowych.featureCount()>0:
@@ -387,7 +301,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     nazwy_wod_powierzchniowych = None
-            progress.setValue(13)
+            progress.setValue(4)
             if os.path.exists(path+przestrzen_nazw+'__OT_TCPN_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_TCPN_A__nazwy_parkow_narodowych.qml"), path+przestrzen_nazw+'__nazwy_parkow_narodowych.qml')
                 nazwy_parkow_narodowych = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCPN_A."+formatPliku, przestrzen_nazw+"__nazwy parków narodowych","ogr")
@@ -399,7 +313,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     nazwy_parkow_narodowych = None
-            progress.setValue(14)
+            progress.setValue(5)
             if os.path.exists(path+przestrzen_nazw+'__OT_TCRZ_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_TCRZ_A__nazwy_rezerwatow.qml"), path+przestrzen_nazw+'__nazwy_rezerwatow.qml')
                 nazwy_rezerwatow = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCRZ_A."+formatPliku, przestrzen_nazw+"__nazwy rezerwatów","ogr")
@@ -411,7 +325,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     nazwy_rezerwatow = None
-            progress.setValue(15)
+            progress.setValue(6)
             if os.path.exists(path+przestrzen_nazw+'__OT_TCPK_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_TCPK_A__nazwy_parkow_krajobrazowych.qml"), path+przestrzen_nazw+'__nazwy_parkow_krajobrazowych.qml')
                 nazwy_parkow_krajobrazowych = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCPK_A."+formatPliku, przestrzen_nazw+"__nazwy parków krajobrazowych","ogr")
@@ -423,7 +337,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     nazwy_parkow_krajobrazowych = None
-            progress.setValue(16)
+            progress.setValue(7)
             if os.path.exists(path+przestrzen_nazw+'__OT_KUKO_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_KUKO_A__nazwy_kompleksow.qml"), path+przestrzen_nazw+'__nazwy_kompleksow.qml')
                 nazwy_kompleksow = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUKO_A."+formatPliku, przestrzen_nazw+"__nazwy kompleksów","ogr")
@@ -435,7 +349,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     nazwy_kompleksow = None
-            progress.setValue(17)
+            progress.setValue(8)
             if os.path.exists(path+przestrzen_nazw+'__OT_ADMS_P.'+formatPliku):
                 copyfile(qmlPath/Path("OT_ADMS_P.qml"), path+przestrzen_nazw+'__OT_ADMS_P.qml')
                 OT_ADMS_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_ADMS_P."+formatPliku, przestrzen_nazw+"__OT_ADMS_P","ogr")
@@ -447,7 +361,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_ADMS_P = None
-            progress.setValue(18)
+            progress.setValue(9)
             if os.path.exists(path+przestrzen_nazw+'__OT_TCRZ_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_TCRZ_A_pkt.qml"), path+przestrzen_nazw+'__OT_TCRZ_A_pkt.qml')
                 OT_TCRZ_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCRZ_A."+formatPliku, przestrzen_nazw+"__OT_TCRZ_A","ogr")
@@ -459,7 +373,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_TCRZ_A = None
-            progress.setValue(19)            
+            progress.setValue(10)
             if os.path.exists(path+przestrzen_nazw+'__OT_KUPG_P.'+formatPliku):
                 copyfile(qmlPath/Path("OT_KUPG_P.qml"), path+przestrzen_nazw+'__OT_KUPG_P.qml')
                 OT_KUPG_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUPG_P."+formatPliku, przestrzen_nazw+"__OT_KUPG_P","ogr")
@@ -471,7 +385,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_KUPG_P = None
-            progress.setValue(20)            
+            progress.setValue(11)
             if os.path.exists(path+przestrzen_nazw+'__OT_KUKO_P.'+formatPliku):
                 copyfile(qmlPath/Path("OT_KUKO_P.qml"), path+przestrzen_nazw+'__OT_KUKO_P.qml')
                 OT_KUKO_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUKO_P."+formatPliku, przestrzen_nazw+"__OT_KUKO_P","ogr")
@@ -483,19 +397,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_KUKO_P = None
-            progress.setValue(21)            
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUHU_P.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUHU_P.qml"), path+przestrzen_nazw+'__OT_KUHU_P.qml')
-                OT_KUHU_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUHU_P."+formatPliku, przestrzen_nazw+"__OT_KUHU_P","ogr")
-                if OT_KUHU_P.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_KUHU_P, False)
-                    groupPunktowe.addLayer(OT_KUHU_P)
-                    OT_KUHU_P.loadNamedStyle(path+przestrzen_nazw+'__OT_KUHU_P.qml')
-                    myLayerNode = root.findLayer(OT_KUHU_P.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_KUHU_P = None
-            progress.setValue(22)            
+            progress.setValue(12)
             if os.path.exists(path+przestrzen_nazw+'__OT_OIKM_P.'+formatPliku):
                 copyfile(qmlPath/Path("OT_OIKM_P.qml"), path+przestrzen_nazw+'__OT_OIKM_P.qml')
                 OT_OIKM_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_OIKM_P."+formatPliku, przestrzen_nazw+"__OT_OIKM_P","ogr")
@@ -507,56 +409,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_OIKM_P = None
-            progress.setValue(23)
-            if os.path.exists(path+przestrzen_nazw+'__OT_BUHD_P.'+formatPliku):
-                copyfile(qmlPath/Path("OT_BUHD_P.qml"), path+przestrzen_nazw+'__OT_BUHD_P.qml')
-                OT_BUHD_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_BUHD_P."+formatPliku, przestrzen_nazw+"__OT_BUHD_P","ogr")
-                if OT_BUHD_P.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_BUHD_P, False)
-                    groupPunktowe.addLayer(OT_BUHD_P)
-                    OT_BUHD_P.loadNamedStyle(path+przestrzen_nazw+'__OT_BUHD_P.qml')
-                    myLayerNode = root.findLayer(OT_BUHD_P.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_BUHD_P = None
-            progress.setValue(24)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SKRW_P.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SKRW_P.qml"), path+przestrzen_nazw+'__OT_SKRW_P.qml')
-                OT_SKRW_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_SKRW_P."+formatPliku, przestrzen_nazw+"__OT_SKRW_P","ogr")
-                if OT_SKRW_P.featureCount()>0:
-                    OT_SKRW_P.setSubsetString("typWezlaDrogowego = 'Wa'")
-                    QgsProject.instance().addMapLayer(OT_SKRW_P, False)
-                    groupPunktowe.addLayer(OT_SKRW_P)
-                    OT_SKRW_P.loadNamedStyle(path+przestrzen_nazw+'__OT_SKRW_P.qml')
-                    myLayerNode = root.findLayer(OT_SKRW_P.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_SKRW_P = None
-            progress.setValue(25)
-            if os.path.exists(path+przestrzen_nazw+'__OT_BUWT_P.'+formatPliku):
-                copyfile(qmlPath/Path("OT_BUWT_P.qml"), path+przestrzen_nazw+'__OT_BUWT_P.qml')
-                OT_BUWT_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_BUWT_P."+formatPliku, przestrzen_nazw+"__OT_BUWT_P","ogr")
-                if OT_BUWT_P.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_BUWT_P, False)
-                    groupPunktowe.addLayer(OT_BUWT_P)
-                    OT_BUWT_P.loadNamedStyle(path+przestrzen_nazw+'__OT_BUWT_P.qml')
-                    myLayerNode = root.findLayer(OT_BUWT_P.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_BUWT_P = None
-            progress.setValue(26)
-            if os.path.exists(path+przestrzen_nazw+'__OT_BUIT_P.'+formatPliku):
-                copyfile(qmlPath/Path("OT_BUIT_P.qml"), path+przestrzen_nazw+'__OT_BUIT_P.qml')
-                OT_BUIT_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_BUIT_P."+formatPliku, przestrzen_nazw+"__OT_BUIT_P","ogr")
-                if OT_BUIT_P.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_BUIT_P, False)
-                    groupPunktowe.addLayer(OT_BUIT_P)
-                    OT_BUIT_P.loadNamedStyle(path+przestrzen_nazw+'__OT_BUIT_P.qml')
-                    myLayerNode = root.findLayer(OT_BUIT_P.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_BUIT_P = None
-            progress.setValue(27)
+            progress.setValue(13)
             if os.path.exists(path+przestrzen_nazw+'__OT_SULN_L.'+formatPliku):
                 copyfile(qmlPath/Path("OT_SULN_L.qml"), path+przestrzen_nazw+'__OT_SULN_L.qml')
                 OT_SULN_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SULN_L."+formatPliku, przestrzen_nazw+"__OT_SULN_L","ogr")
@@ -568,12 +421,11 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_SULN_L = None
-            progress.setValue(28)           
+            progress.setValue(14)
             if os.path.exists(path+przestrzen_nazw+'__OT_SKPP_L.'+formatPliku):
                 copyfile(qmlPath/Path("OT_SKPP_L.qml"), path+przestrzen_nazw+'__OT_SKPP_L.qml')
                 OT_SKPP_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SKPP_L."+formatPliku, przestrzen_nazw+"__OT_SKPP_L","ogr")
                 if OT_SKPP_L.featureCount()>0:
-                    OT_SKPP_L.setSubsetString("rodzaj = 'Pr'")
                     QgsProject.instance().addMapLayer(OT_SKPP_L, False)
                     group.addLayer(OT_SKPP_L)
                     OT_SKPP_L.loadNamedStyle(path+przestrzen_nazw+'__OT_SKPP_L.qml')
@@ -581,11 +433,9 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_SKPP_L = None
-            progress.setValue(29)            
+            progress.setValue(15)
             if os.path.exists(path+przestrzen_nazw+'__OT_SKTR_L.'+formatPliku):
                 copyfile(qmlPath/Path("OT_SKTR_L.qml"), path+przestrzen_nazw+'__OT_SKTR_L.qml')
-                if formatPliku=="xml":
-                    copyfile(gfsPath/Path("OT_SKTR_L.gfs"), path+przestrzen_nazw+'__OT_SKTR_L.gfs')
                 OT_SKTR_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SKTR_L."+formatPliku, przestrzen_nazw+"__OT_SKTR_L","ogr")
                 if OT_SKTR_L.featureCount()>0:
                     QgsProject.instance().addMapLayer(OT_SKTR_L, False)
@@ -595,55 +445,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_SKTR_L = None
-            progress.setValue(30)   
-            if os.path.exists(path+przestrzen_nazw+'__OT_BUHD_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_BUHD_L.qml"), path+przestrzen_nazw+'__OT_BUHD_L.qml')
-                OT_BUHD_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_BUHD_L."+formatPliku, przestrzen_nazw+"__OT_BUHD_L","ogr")
-                if OT_BUHD_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_BUHD_L, False)
-                    group.addLayer(OT_BUHD_L)
-                    OT_BUHD_L.loadNamedStyle(path+przestrzen_nazw+'__OT_BUHD_L.qml')
-                    myLayerNode = root.findLayer(OT_BUHD_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_BUHD_L = None
-            progress.setValue(31)
-            if os.path.exists(path+przestrzen_nazw+'__OT_BUIN_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_BUIN_L.qml"), path+przestrzen_nazw+'__OT_BUIN_L.qml')
-                OT_BUIN_L= QgsVectorLayer(path+przestrzen_nazw+"__OT_BUIN_L."+formatPliku, przestrzen_nazw+"__OT_BUIN_L","ogr")
-                if OT_BUIN_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_BUIN_L, False)
-                    group.addLayer(OT_BUIN_L)
-                    OT_BUIN_L.loadNamedStyle(path+przestrzen_nazw+'__OT_BUIN_L.qml')
-                    myLayerNode = root.findLayer(OT_BUIN_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_BUIN_L = None
-            progress.setValue(32)
-            if os.path.exists(path+przestrzen_nazw+'__OT_BUTR_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_BUTR_L.qml"), path+przestrzen_nazw+'__OT_BUTR_L.qml')
-                OT_BUTR_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_BUTR_L."+formatPliku, przestrzen_nazw+"__OT_BUTR_L","ogr")
-                if OT_BUTR_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_BUTR_L, False)
-                    group.addLayer(OT_BUTR_L)
-                    OT_BUTR_L.loadNamedStyle(path+przestrzen_nazw+'__OT_BUTR_L.qml')
-                    myLayerNode = root.findLayer(OT_BUTR_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_BUTR_L = None
-            progress.setValue(33)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SUPR_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SUPR_L.qml"), path+przestrzen_nazw+'__OT_SUPR_L.qml')
-                OT_SUPR_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SUPR_L."+formatPliku, przestrzen_nazw+"__OT_SUPR_L","ogr")
-                if OT_SUPR_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_SUPR_L, False)
-                    group.addLayer(OT_SUPR_L)
-                    OT_SUPR_L.loadNamedStyle(path+przestrzen_nazw+'__OT_SUPR_L.qml')
-                    myLayerNode = root.findLayer(OT_SUPR_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_SUPR_L = None
-            progress.setValue(34)
+            progress.setValue(16)
             if os.path.exists(path+przestrzen_nazw+'__OT_SKDR_L.'+formatPliku):
                 copyfile(qmlPath/Path("OT_SKDR_L.qml"), path+przestrzen_nazw+'__OT_SKDR_L.qml')
                 OT_SKDR_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SKDR_L."+formatPliku, przestrzen_nazw+"__OT_SKDR_L","ogr")
@@ -655,31 +457,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_SKDR_L = None
-            progress.setValue(35)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SKRP_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SKRP_L.qml"), path+przestrzen_nazw+'__OT_SKRP_L.qml')
-                OT_SKRP_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SKRP_L."+formatPliku, przestrzen_nazw+"__OT_SKRP_L","ogr")
-                if OT_SKRP_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_SKRP_L, False)
-                    group.addLayer(OT_SKRP_L)
-                    OT_SKRP_L.loadNamedStyle(path+przestrzen_nazw+'__OT_SKRP_L.qml')
-                    myLayerNode = root.findLayer(OT_SKRP_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_SKRP_L = None
-            progress.setValue(36)
-            if os.path.exists(path+przestrzen_nazw+'__OT_BUZM_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_BUZM_L.qml"), path+przestrzen_nazw+'__OT_BUZM_L.qml')
-                OT_BUZM_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_BUZM_L."+formatPliku, przestrzen_nazw+"__OT_BUZM_L","ogr")
-                if OT_BUZM_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_BUZM_L, False)
-                    group.addLayer(OT_BUZM_L)
-                    OT_BUZM_L.loadNamedStyle(path+przestrzen_nazw+'__OT_BUZM_L.qml')
-                    myLayerNode = root.findLayer(OT_BUZM_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_BUZM_L = None
-            progress.setValue(37)
+            progress.setValue(17)
             if os.path.exists(path+przestrzen_nazw+'__OT_ADJA_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_ADJA_A.qml"), path+przestrzen_nazw+'__OT_ADJA_A.qml')
                 OT_ADJA_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_ADJA_A."+formatPliku, przestrzen_nazw+"__OT_ADJA_A","ogr")
@@ -691,7 +469,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_ADJA_A = None
-            progress.setValue(38)
+            progress.setValue(18)
             if os.path.exists(path+przestrzen_nazw+'__OT_TCPN_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_TCPN_A.qml"), path+przestrzen_nazw+'__OT_TCPN_A.qml')
                 OT_TCPN_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCPN_A."+formatPliku, przestrzen_nazw+"__OT_TCPN_A","ogr")
@@ -703,19 +481,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_TCPN_A = None
-            progress.setValue(39)
-            if os.path.exists(path+przestrzen_nazw+'__OT_TCRZ_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_TCRZ_A.qml"), path+przestrzen_nazw+'__OT_TCRZ_A.qml')
-                OT_TCRZ_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCRZ_A."+formatPliku, przestrzen_nazw+"__OT_TCRZ_A","ogr")
-                if OT_TCRZ_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_TCRZ_A, False)
-                    group.addLayer(OT_TCRZ_A)
-                    OT_TCRZ_A.loadNamedStyle(path+przestrzen_nazw+'__OT_TCRZ_A.qml')
-                    myLayerNode = root.findLayer(OT_TCRZ_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_TCRZ_A = None
-            progress.setValue(40)
+            progress.setValue(19)
             if os.path.exists(path+przestrzen_nazw+'__OT_TCPK_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_TCPK_A.qml"), path+przestrzen_nazw+'__OT_TCPK_A.qml')
                 OT_TCPK_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCPK_A."+formatPliku, przestrzen_nazw+"__OT_TCPK_A","ogr")
@@ -727,55 +493,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_TCPK_A = None
-            progress.setValue(41)
-            if os.path.exists(path+przestrzen_nazw+'__OT_TCON_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_TCON_A.qml"), path+przestrzen_nazw+'__OT_TCON_A.qml')
-                OT_TCON_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCON_A."+formatPliku, przestrzen_nazw+"__OT_TCON_A","ogr")
-                if OT_TCON_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_TCON_A, False)
-                    group.addLayer(OT_TCON_A)
-                    OT_TCON_A.loadNamedStyle(path+przestrzen_nazw+'__OT_TCON_A.qml')
-                    myLayerNode = root.findLayer(OT_TCON_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_TCON_A = None
-            progress.setValue(42) 
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUIK_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUIK_A.qml"), path+przestrzen_nazw+'__OT_KUIK_A.qml')
-                OT_KUIK_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUIK_A."+formatPliku, przestrzen_nazw+"__OT_KUIK_A","ogr")
-                if OT_KUIK_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_KUIK_A, False)
-                    group.addLayer(OT_KUIK_A)
-                    OT_KUIK_A.loadNamedStyle(path+przestrzen_nazw+'__OT_KUIK_A.qml')
-                    myLayerNode = root.findLayer(OT_KUIK_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_KUIK_A = None
-            progress.setValue(43)
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUSC_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUSC_A.qml"), path+przestrzen_nazw+'__OT_KUSC_A.qml')
-                OT_KUSC_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUSC_A."+formatPliku, przestrzen_nazw+"__OT_KUSC_A","ogr")
-                if OT_KUSC_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_KUSC_A, False)
-                    group.addLayer(OT_KUSC_A)
-                    OT_KUSC_A.loadNamedStyle(path+przestrzen_nazw+'__OT_KUSC_A.qml')
-                    myLayerNode = root.findLayer(OT_KUSC_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_KUSC_A = None
-            progress.setValue(44)
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUKO_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUKO_A.qml"), path+przestrzen_nazw+'__OT_KUKO_A.qml')
-                OT_KUKO_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUKO_A."+formatPliku, przestrzen_nazw+"__OT_KUKO_A","ogr")
-                if OT_KUKO_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_KUKO_A, False)
-                    group.addLayer(OT_KUKO_A)
-                    OT_KUKO_A.loadNamedStyle(path+przestrzen_nazw+'__OT_KUKO_A.qml')
-                    myLayerNode = root.findLayer(OT_KUKO_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_KUKO_A = None
-            progress.setValue(45)
+            progress.setValue(20)
             if os.path.exists(path+przestrzen_nazw+'__OT_BUUO_L.'+formatPliku):
                 copyfile(qmlPath/Path("OT_BUUO_L.qml"), path+przestrzen_nazw+'__OT_BUUO_L.qml')
                 OT_BUUO_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_BUUO_L."+formatPliku, przestrzen_nazw+"__OT_BUUO_L","ogr")
@@ -787,11 +505,9 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_BUUO_L = None
-            progress.setValue(46)
+            progress.setValue(21)
             if os.path.exists(path+przestrzen_nazw+'__OT_PTWP_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_PTWP_A.qml"), path+przestrzen_nazw+'__OT_PTWP_A.qml')
-                if formatPliku=="xml":
-                    copyfile(gfsPath/Path("OT_PTWP_A.gfs"), path+przestrzen_nazw+'__OT_PTWP_A.gfs')
                 OT_PTWP_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTWP_A."+formatPliku, przestrzen_nazw+"__OT_PTWP_A","ogr")
                 if OT_PTWP_A.featureCount()>0:
                     QgsProject.instance().addMapLayer(OT_PTWP_A, False)
@@ -801,11 +517,9 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_PTWP_A = None
-            progress.setValue(47)
+            progress.setValue(22)
             if os.path.exists(path+przestrzen_nazw+'__OT_SWKN_L.'+formatPliku):
                 copyfile(qmlPath/Path("OT_SWKN_L.qml"), path+przestrzen_nazw+'__OT_SWKN_L.qml')
-                if formatPliku=="xml":
-                    copyfile(gfsPath/Path("OT_SWKN_L.gfs"), path+przestrzen_nazw+'__OT_SWKN_L.gfs')
                 OT_SWKN_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SWKN_L."+formatPliku, przestrzen_nazw+"__OT_SWKN_L","ogr")
                 if OT_SWKN_L.featureCount()>0:
                     QgsProject.instance().addMapLayer(OT_SWKN_L, False)
@@ -815,11 +529,9 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_SWKN_L = None
-            progress.setValue(48)
+            progress.setValue(23)
             if os.path.exists(path+przestrzen_nazw+'__OT_SWRS_L.'+formatPliku):
                 copyfile(qmlPath/Path("OT_SWRS_L.qml"), path+przestrzen_nazw+'__OT_SWRS_L.qml')
-                if formatPliku=="xml":
-                    copyfile(gfsPath/Path("OT_SWRS_L.gfs"), path+przestrzen_nazw+'__OT_SWRS_L.gfs')
                 OT_SWRS_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SWRS_L."+formatPliku, przestrzen_nazw+"__OT_SWRS_L","ogr")
                 if OT_SWRS_L.featureCount()>0:
                     QgsProject.instance().addMapLayer(OT_SWRS_L, False)
@@ -829,57 +541,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_SWRS_L = None
-            progress.setValue(49)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SWRM_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SWRM_L.qml"), path+przestrzen_nazw+'__OT_SWRM_L.qml')
-                if formatPliku=="xml":
-                    copyfile(gfsPath/Path("OT_SWRM_L.gfs"), path+przestrzen_nazw+'__OT_SWRM_L.gfs')
-                OT_SWRM_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SWRM_L."+formatPliku, przestrzen_nazw+"__OT_SWRM_L","ogr")
-                if OT_SWRM_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_SWRM_L, False)
-                    group.addLayer(OT_SWRM_L)
-                    OT_SWRM_L.loadNamedStyle(path+przestrzen_nazw+'__OT_SWRM_L.qml')
-                    myLayerNode = root.findLayer(OT_SWRM_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_SWRM_L = None
-            progress.setValue(50)
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUPG_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUPG_A.qml"), path+przestrzen_nazw+'__OT_KUPG_A.qml')
-                OT_KUPG_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUPG_A."+formatPliku, przestrzen_nazw+"__OT_KUPG_A","ogr")
-                if OT_KUPG_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_KUPG_A, False)
-                    group.addLayer(OT_KUPG_A)
-                    OT_KUPG_A.loadNamedStyle(path+przestrzen_nazw+'__OT_KUPG_A.qml')
-                    myLayerNode = root.findLayer(OT_KUPG_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_KUPG_A = None
-            progress.setValue(51)
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUHU_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUHU_A.qml"), path+przestrzen_nazw+'__OT_KUHU_A.qml')
-                OT_KUHU_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUHU_A."+formatPliku, przestrzen_nazw+"__OT_KUHU_A","ogr")
-                if OT_KUHU_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_KUHU_A, False)
-                    group.addLayer(OT_KUHU_A)
-                    OT_KUHU_A.loadNamedStyle(path+przestrzen_nazw+'__OT_KUHU_A.qml')
-                    myLayerNode = root.findLayer(OT_KUHU_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_KUHU_A = None
-            progress.setValue(52)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTZB_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTZB_A.qml"), path+przestrzen_nazw+'__OT_PTZB_A.qml')
-                OT_PTZB_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTZB_A."+formatPliku, przestrzen_nazw+"__OT_PTZB_A","ogr")
-                if OT_PTZB_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTZB_A, False)
-                    group.addLayer(OT_PTZB_A)
-                    OT_PTZB_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTZB_A.qml')
-                    myLayerNode = root.findLayer(OT_PTZB_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTZB_A = None
-            progress.setValue(53)
+            progress.setValue(24)
             if os.path.exists(path+przestrzen_nazw+'__OT_OIMK_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_OIMK_A.qml"), path+przestrzen_nazw+'__OT_OIMK_A.qml')
                 OT_OIMK_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_OIMK_A."+formatPliku, przestrzen_nazw+"__OT_OIMK_A","ogr")
@@ -891,7 +553,31 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_OIMK_A = None
-            progress.setValue(54)
+            progress.setValue(25)
+            if os.path.exists(path+przestrzen_nazw+'__OT_KUSC_A.'+formatPliku):
+                copyfile(qmlPath/Path("OT_KUSC_A.qml"), path+przestrzen_nazw+'__OT_KUSC_A.qml')
+                OT_KUSC_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUSC_A."+formatPliku, przestrzen_nazw+"__OT_KUSC_A","ogr")
+                if OT_KUSC_A.featureCount()>0:
+                    QgsProject.instance().addMapLayer(OT_KUSC_A, False)
+                    group.addLayer(OT_KUSC_A)
+                    OT_KUSC_A.loadNamedStyle(path+przestrzen_nazw+'__OT_KUSC_A.qml')
+                    myLayerNode = root.findLayer(OT_KUSC_A.id())
+                    myLayerNode.setExpanded(False)
+                else:
+                    OT_KUSC_A = None
+            progress.setValue(26)
+            if os.path.exists(path+przestrzen_nazw+'__OT_PTZB_A.'+formatPliku):
+                copyfile(qmlPath/Path("OT_PTZB_A.qml"), path+przestrzen_nazw+'__OT_PTZB_A.qml')
+                OT_PTZB_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTZB_A."+formatPliku, przestrzen_nazw+"__OT_PTZB_A","ogr")
+                if OT_PTZB_A.featureCount()>0:
+                    QgsProject.instance().addMapLayer(OT_PTZB_A, False)
+                    group.addLayer(OT_PTZB_A)
+                    OT_PTZB_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTZB_A.qml')
+                    myLayerNode = root.findLayer(OT_PTZB_A.id())
+                    myLayerNode.setExpanded(False)
+                else:
+                    OT_PTZB_A = None
+            progress.setValue(27)
             if os.path.exists(path+przestrzen_nazw+'__OT_PTUT_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_PTUT_A.qml"), path+przestrzen_nazw+'__OT_PTUT_A.qml')
                 OT_PTUT_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTUT_A."+formatPliku, przestrzen_nazw+"__OT_PTUT_A","ogr")
@@ -903,31 +589,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_PTUT_A = None
-            progress.setValue(55)
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUSK_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUSK_A.qml"), path+przestrzen_nazw+'__OT_KUSK_A.qml')
-                OT_KUSK_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUSK_A."+formatPliku, przestrzen_nazw+"__OT_KUSK_A","ogr")
-                if OT_KUSK_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_KUSK_A, False)
-                    group.addLayer(OT_KUSK_A)
-                    OT_KUSK_A.loadNamedStyle(path+przestrzen_nazw+'__OT_KUSK_A.qml')
-                    myLayerNode = root.findLayer(OT_KUSK_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_KUSK_A = None
-            progress.setValue(56)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTPL_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTPL_A.qml"), path+przestrzen_nazw+'__OT_PTPL_A.qml')
-                OT_PTPL_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTPL_A."+formatPliku, przestrzen_nazw+"__OT_PTPL_A","ogr")
-                if OT_PTPL_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTPL_A, False)
-                    group.addLayer(OT_PTPL_A)
-                    OT_PTPL_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTPL_A.qml')
-                    myLayerNode = root.findLayer(OT_PTPL_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTPL_A = None
-            progress.setValue(57)
+            progress.setValue(28)
             if os.path.exists(path+przestrzen_nazw+'__OT_PTGN_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_PTGN_A.qml"), path+przestrzen_nazw+'__OT_PTGN_A.qml')
                 OT_PTGN_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTGN_A."+formatPliku, przestrzen_nazw+"__OT_PTGN_A","ogr")
@@ -939,7 +601,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_PTGN_A = None
-            progress.setValue(58)
+            progress.setValue(29)
             if os.path.exists(path+przestrzen_nazw+'__OT_PTRK_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_PTRK_A.qml"), path+przestrzen_nazw+'__OT_PTRK_A.qml')
                 OT_PTRK_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTRK_A."+formatPliku, przestrzen_nazw+"__OT_PTRK_A","ogr")
@@ -951,7 +613,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_PTRK_A = None
-            progress.setValue(59)
+            progress.setValue(30)
             if os.path.exists(path+przestrzen_nazw+'__OT_PTNZ_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_PTNZ_A.qml"), path+przestrzen_nazw+'__OT_PTNZ_A.qml')
                 OT_PTNZ_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTNZ_A."+formatPliku, przestrzen_nazw+"__OT_PTNZ_A","ogr")
@@ -963,31 +625,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_PTNZ_A = None
-            progress.setValue(60)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTSO_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTSO_A.qml"), path+przestrzen_nazw+'__OT_PTSO_A.qml')
-                OT_PTSO_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTSO_A."+formatPliku, przestrzen_nazw+"__OT_PTSO_A","ogr")
-                if OT_PTSO_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTSO_A, False)
-                    group.addLayer(OT_PTSO_A)
-                    OT_PTSO_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTSO_A.qml')
-                    myLayerNode = root.findLayer(OT_PTSO_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTSO_A = None
-            progress.setValue(61)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTWZ_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTWZ_A.qml"), path+przestrzen_nazw+'__OT_PTWZ_A.qml')
-                OT_PTWZ_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTWZ_A."+formatPliku, przestrzen_nazw+"__OT_PTWZ_A","ogr")
-                if OT_PTWZ_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTWZ_A, False)
-                    group.addLayer(OT_PTWZ_A)
-                    OT_PTWZ_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTWZ_A.qml')
-                    myLayerNode = root.findLayer(OT_PTWZ_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTWZ_A = None
-            progress.setValue(62)
+            progress.setValue(31)
             if os.path.exists(path+przestrzen_nazw+'__OT_PTLZ_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_PTLZ_A.qml"), path+przestrzen_nazw+'__OT_PTLZ_A.qml')
                 OT_PTLZ_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTLZ_A."+formatPliku, przestrzen_nazw+"__OT_PTLZ_A","ogr")
@@ -999,7 +637,7 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_PTLZ_A = None
-            progress.setValue(63)
+            progress.setValue(32)
             if os.path.exists(path+przestrzen_nazw+'__OT_PTTR_A.'+formatPliku):
                 copyfile(qmlPath/Path("OT_PTTR_A.qml"), path+przestrzen_nazw+'__OT_PTTR_A.qml')
                 OT_PTTR_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTTR_A."+formatPliku, przestrzen_nazw+"__OT_PTTR_A","ogr")
@@ -1011,97 +649,8 @@ class BDOO_GML_Loader:
                     myLayerNode.setExpanded(False)
                 else:
                     OT_PTTR_A = None
-            progress.setValue(64)
-                        
-            #join do warstwy OT_PTWP_A
-            if os.path.exists(path+przestrzen_nazw+'__OT_ZbiornikWodny.xml') and os.path.exists(path+przestrzen_nazw+'__OT_Ciek.xml') and os.path.exists(path+przestrzen_nazw+'__OT_PTWP_A.xml') and OT_Ciek != None and OT_ZbiornikWodny != None and OT_PTWP_A != None:
-                joinObject = QgsVectorLayerJoinInfo()
-                joinObject.setJoinFieldName('gml_id')
-                joinObject.setTargetFieldName('ZbiornikWodny1_gmlid')
-                joinObject.setJoinFieldNamesSubset(['nazwa'])
-                joinObject.setJoinLayerId(OT_ZbiornikWodny.id())
-                joinObject.setUsingMemoryCache(True)
-                joinObject.setJoinLayer(OT_ZbiornikWodny)
-                OT_PTWP_A.addJoin(joinObject)
-                nazwy_wod_powierzchniowych.addJoin(joinObject)
-                joinObject = QgsVectorLayerJoinInfo()
-                joinObject.setJoinFieldName('gml_id')
-                joinObject.setTargetFieldName('ciek2_gmlid')
-                joinObject.setJoinFieldNamesSubset(['nazwa'])
-                joinObject.setJoinLayerId(OT_Ciek.id())
-                joinObject.setUsingMemoryCache(True)
-                joinObject.setJoinLayer(OT_Ciek)
-                OT_PTWP_A.addJoin(joinObject)
-                nazwy_wod_powierzchniowych.addJoin(joinObject)
-                #dodanie kolumn wirtualnych do warstwy OT_PTWP_A
-                nazwa = QgsField( 'ZB_NAZWA', QVariant.String )
-                OT_PTWP_A.addExpressionField('"'+przestrzen_nazw+'__OT_ZbiornikWodny_nazwa"', nazwa)
-                nazwy_wod_powierzchniowych.addExpressionField('"'+przestrzen_nazw+'__OT_ZbiornikWodny_nazwa"', nazwa)
-            progress.setValue(65)
-
-            #join do warstwy OT_SKTR_L
-            if os.path.exists(path+przestrzen_nazw+'__OT_LiniaKolejowa.xml') and os.path.exists(path+przestrzen_nazw+'__OT_SKTR_L.xml') and OT_LiniaKolejowa != None and OT_SKTR_L != None:
-                joinObject = QgsVectorLayerJoinInfo()
-                joinObject.setJoinFieldName('gml_id')
-                joinObject.setTargetFieldName('liniakolejowa_gmlid')
-                joinObject.setJoinFieldNamesSubset(['nrLinii'])
-                joinObject.setJoinLayerId(OT_LiniaKolejowa.id())
-                joinObject.setUsingMemoryCache(True)
-                joinObject.setJoinLayer(OT_LiniaKolejowa)
-                OT_SKTR_L.addJoin(joinObject)
-                #dodanie kolumn wirtualnych do warstwy OT_SKTR_L
-                nazwa = QgsField( 'nrLinii', QVariant.String )
-                OT_SKTR_L.addExpressionField('"'+przestrzen_nazw+'__OT_LiniaKolejowa_nrLinii"', nazwa)
-            progress.setValue(66)
-
-            #join do warstwy OT_SWRS_L
-            if os.path.exists(path+przestrzen_nazw+'__OT_Ciek.xml') and os.path.exists(path+przestrzen_nazw+'__OT_SWRS_L.xml') and OT_Ciek != None and OT_SWRS_L != None:
-                joinObject = QgsVectorLayerJoinInfo()
-                joinObject.setJoinFieldName('gml_id')
-                joinObject.setTargetFieldName('ciek1_gmlid')
-                joinObject.setJoinFieldNamesSubset(['nazwa'])
-                joinObject.setJoinLayerId(OT_Ciek.id())
-                joinObject.setUsingMemoryCache(True)
-                joinObject.setJoinLayer(OT_Ciek)
-                OT_SWRS_L.addJoin(joinObject)
-                nazwy_rzek.addJoin(joinObject)
-                #dodanie kolumn wirtualnych do warstwy OT_SWRS_L
-                nazwa = QgsField( 'CIEK_NAZWA', QVariant.String )
-                OT_SWRS_L.addExpressionField('"'+przestrzen_nazw+'__OT_Ciek_nazwa"', nazwa)
-                nazwy_rzek.addExpressionField('"'+przestrzen_nazw+'__OT_Ciek_nazwa"', nazwa)
-            progress.setValue(67)
-
-            #join do warstwy OT_SWRM_L
-            if os.path.exists(path+przestrzen_nazw+'__OT_Ciek.xml') and os.path.exists(path+przestrzen_nazw+'__OT_SWRM_L.xml') and OT_Ciek != None and OT_SWRM_L != None:
-                joinObject = QgsVectorLayerJoinInfo()
-                joinObject.setJoinFieldName('gml_id')
-                joinObject.setTargetFieldName('ciek1_gmlid')
-                joinObject.setJoinFieldNamesSubset(['nazwa'])
-                joinObject.setJoinLayerId(OT_Ciek.id())
-                joinObject.setUsingMemoryCache(True)
-                joinObject.setJoinLayer(OT_Ciek)
-                OT_SWRM_L.addJoin(joinObject)
-                nazwy_rzek.addJoin(joinObject)
-                #dodanie kolumn wirtualnych do warstwy OT_SWRM_L
-                nazwa = QgsField( 'CIEK_NAZWA', QVariant.String )
-                OT_SWRM_L.addExpressionField('"'+przestrzen_nazw+'__OT_Ciek_nazwa"', nazwa)
-            progress.setValue(68)
-         
-            #join do warstwy OT_SWKN_L
-            if os.path.exists(path+przestrzen_nazw+'__OT_Ciek.xml') and os.path.exists(path+przestrzen_nazw+'__OT_SWKN_L.xml') and OT_Ciek != None and OT_SWKN_L != None:
-                joinObject = QgsVectorLayerJoinInfo()
-                joinObject.setJoinFieldName('gml_id')
-                joinObject.setTargetFieldName('ciek1_gmlid')
-                joinObject.setJoinFieldNamesSubset(['nazwa'])
-                joinObject.setJoinLayerId(OT_Ciek.id())
-                joinObject.setUsingMemoryCache(True)
-                joinObject.setJoinLayer(OT_Ciek)
-                OT_SWKN_L.addJoin(joinObject)
-                #dodanie kolumn wirtualnych do warstwy OT_SWKN_L
-                nazwa = QgsField( 'CIEK_NAZWA', QVariant.String )
-                OT_SWKN_L.addExpressionField('"'+przestrzen_nazw+'__OT_Ciek_nazwa"', nazwa)
-            progress.setValue(69)
+            progress.setValue(33)
             
             time.sleep(1)
-            iface.messageBar().clearWidgets()    
+            iface.messageBar().clearWidgets()
     pass
