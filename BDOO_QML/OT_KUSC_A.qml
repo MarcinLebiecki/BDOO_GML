@@ -8,7 +8,7 @@
   </temporal>
   <renderer-v2 symbollevels="0" enableorderby="0" referencescale="-1" forceraster="0" attr="kodKarto250k" type="categorizedSymbol">
     <categories>
-      <category label="laka lub pastwisko" render="true" symbol="0" value="0250_722"/>
+      <category label="teren cmentarza" render="true" symbol="0" value="0250_342"/>
     </categories>
     <symbols>
       <symbol alpha="1" force_rhr="0" name="0" type="fill" clip_to_extent="1">
@@ -22,7 +22,7 @@
         <layer class="SimpleFill" enabled="1" pass="0" locked="0">
           <Option type="Map">
             <Option name="border_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="color" type="QString" value="237,242,209,255"/>
+            <Option name="color" type="QString" value="166,110,110,100"/>
             <Option name="joinstyle" type="QString" value="bevel"/>
             <Option name="offset" type="QString" value="0,0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
@@ -34,7 +34,7 @@
             <Option name="style" type="QString" value="solid"/>
           </Option>
           <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="color" v="237,242,209,255"/>
+          <prop k="color" v="166,110,110,100"/>
           <prop k="joinstyle" v="bevel"/>
           <prop k="offset" v="0,0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -66,7 +66,7 @@
         <layer class="SimpleFill" enabled="1" pass="0" locked="0">
           <Option type="Map">
             <Option name="border_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="color" type="QString" value="211,224,205,255"/>
+            <Option name="color" type="QString" value="166,110,110,100"/>
             <Option name="joinstyle" type="QString" value="bevel"/>
             <Option name="offset" type="QString" value="0,0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
@@ -78,7 +78,7 @@
             <Option name="style" type="QString" value="solid"/>
           </Option>
           <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="color" v="211,224,205,255"/>
+          <prop k="color" v="166,110,110,100"/>
           <prop k="joinstyle" v="bevel"/>
           <prop k="offset" v="0,0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -383,6 +383,7 @@ def my_form_open(dialog, layer, feature):
     <field name="x_aktualnoscA" editable="1"/>
     <field name="x_aktualnoscG" editable="1"/>
     <field name="x_dataUtworzenia" editable="1"/>
+    <field name="x_informDodatkowa" editable="1"/>
     <field name="x_katDoklGeom" editable="1"/>
     <field name="x_katIstnienia" editable="1"/>
     <field name="x_kod" editable="1"/>
@@ -413,6 +414,7 @@ def my_form_open(dialog, layer, feature):
     <field labelOnTop="0" name="x_aktualnoscA"/>
     <field labelOnTop="0" name="x_aktualnoscG"/>
     <field labelOnTop="0" name="x_dataUtworzenia"/>
+    <field labelOnTop="0" name="x_informDodatkowa"/>
     <field labelOnTop="0" name="x_katDoklGeom"/>
     <field labelOnTop="0" name="x_katIstnienia"/>
     <field labelOnTop="0" name="x_kod"/>

@@ -8,7 +8,9 @@
   </temporal>
   <renderer-v2 symbollevels="0" enableorderby="0" referencescale="-1" forceraster="0" attr="kodKarto250k" type="categorizedSymbol">
     <categories>
-      <category label="laka lub pastwisko" render="true" symbol="0" value="0250_722"/>
+      <category label="zabudowa wielorodzinna" render="true" symbol="0" value="0250_310"/>
+      <category label="zabudowa jednorodzinna" render="true" symbol="1" value="0250_315"/>
+      <category label="teren przemyslowo-skladowy" render="true" symbol="2" value="0250_401"/>
     </categories>
     <symbols>
       <symbol alpha="1" force_rhr="0" name="0" type="fill" clip_to_extent="1">
@@ -22,7 +24,7 @@
         <layer class="SimpleFill" enabled="1" pass="0" locked="0">
           <Option type="Map">
             <Option name="border_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="color" type="QString" value="237,242,209,255"/>
+            <Option name="color" type="QString" value="179,128,64,255"/>
             <Option name="joinstyle" type="QString" value="bevel"/>
             <Option name="offset" type="QString" value="0,0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
@@ -34,7 +36,91 @@
             <Option name="style" type="QString" value="solid"/>
           </Option>
           <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="color" v="237,242,209,255"/>
+          <prop k="color" v="179,128,64,255"/>
+          <prop k="joinstyle" v="bevel"/>
+          <prop k="offset" v="0,0"/>
+          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="outline_color" v="35,35,35,0"/>
+          <prop k="outline_style" v="solid"/>
+          <prop k="outline_width" v="0.26"/>
+          <prop k="outline_width_unit" v="MM"/>
+          <prop k="style" v="solid"/>
+          <data_defined_properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data_defined_properties>
+        </layer>
+      </symbol>
+      <symbol alpha="1" force_rhr="0" name="1" type="fill" clip_to_extent="1">
+        <data_defined_properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data_defined_properties>
+        <layer class="SimpleFill" enabled="1" pass="0" locked="0">
+          <Option type="Map">
+            <Option name="border_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
+            <Option name="color" type="QString" value="209,166,128,255"/>
+            <Option name="joinstyle" type="QString" value="bevel"/>
+            <Option name="offset" type="QString" value="0,0"/>
+            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
+            <Option name="offset_unit" type="QString" value="MM"/>
+            <Option name="outline_color" type="QString" value="35,35,35,0"/>
+            <Option name="outline_style" type="QString" value="solid"/>
+            <Option name="outline_width" type="QString" value="0.26"/>
+            <Option name="outline_width_unit" type="QString" value="MM"/>
+            <Option name="style" type="QString" value="solid"/>
+          </Option>
+          <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="color" v="209,166,128,255"/>
+          <prop k="joinstyle" v="bevel"/>
+          <prop k="offset" v="0,0"/>
+          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="outline_color" v="35,35,35,0"/>
+          <prop k="outline_style" v="solid"/>
+          <prop k="outline_width" v="0.26"/>
+          <prop k="outline_width_unit" v="MM"/>
+          <prop k="style" v="solid"/>
+          <data_defined_properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data_defined_properties>
+        </layer>
+      </symbol>
+      <symbol alpha="1" force_rhr="0" name="2" type="fill" clip_to_extent="1">
+        <data_defined_properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data_defined_properties>
+        <layer class="SimpleFill" enabled="1" pass="0" locked="0">
+          <Option type="Map">
+            <Option name="border_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
+            <Option name="color" type="QString" value="177,142,190,255"/>
+            <Option name="joinstyle" type="QString" value="bevel"/>
+            <Option name="offset" type="QString" value="0,0"/>
+            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
+            <Option name="offset_unit" type="QString" value="MM"/>
+            <Option name="outline_color" type="QString" value="35,35,35,0"/>
+            <Option name="outline_style" type="QString" value="solid"/>
+            <Option name="outline_width" type="QString" value="0.26"/>
+            <Option name="outline_width_unit" type="QString" value="MM"/>
+            <Option name="style" type="QString" value="solid"/>
+          </Option>
+          <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="color" v="177,142,190,255"/>
           <prop k="joinstyle" v="bevel"/>
           <prop k="offset" v="0,0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -66,24 +152,24 @@
         <layer class="SimpleFill" enabled="1" pass="0" locked="0">
           <Option type="Map">
             <Option name="border_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="color" type="QString" value="211,224,205,255"/>
+            <Option name="color" type="QString" value="145,82,45,255"/>
             <Option name="joinstyle" type="QString" value="bevel"/>
             <Option name="offset" type="QString" value="0,0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
             <Option name="offset_unit" type="QString" value="MM"/>
-            <Option name="outline_color" type="QString" value="35,35,35,0"/>
+            <Option name="outline_color" type="QString" value="35,35,35,255"/>
             <Option name="outline_style" type="QString" value="solid"/>
             <Option name="outline_width" type="QString" value="0.26"/>
             <Option name="outline_width_unit" type="QString" value="MM"/>
             <Option name="style" type="QString" value="solid"/>
           </Option>
           <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="color" v="211,224,205,255"/>
+          <prop k="color" v="145,82,45,255"/>
           <prop k="joinstyle" v="bevel"/>
           <prop k="offset" v="0,0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
-          <prop k="outline_color" v="35,35,35,0"/>
+          <prop k="outline_color" v="35,35,35,255"/>
           <prop k="outline_style" v="solid"/>
           <prop k="outline_width" v="0.26"/>
           <prop k="outline_width_unit" v="MM"/>
@@ -271,13 +357,6 @@
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="rodzaj">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
   </fieldConfiguration>
   <aliases>
     <alias field="gml_id" name="" index="0"/>
@@ -288,7 +367,6 @@
     <alias field="oznaczenieZmiany" name="" index="5"/>
     <alias field="zrodloDanychGeometrycznych" name="" index="6"/>
     <alias field="kodKarto250k" name="" index="7"/>
-    <alias field="rodzaj" name="" index="8"/>
   </aliases>
   <defaults>
     <default expression="" field="gml_id" applyOnUpdate="0"/>
@@ -299,7 +377,6 @@
     <default expression="" field="oznaczenieZmiany" applyOnUpdate="0"/>
     <default expression="" field="zrodloDanychGeometrycznych" applyOnUpdate="0"/>
     <default expression="" field="kodKarto250k" applyOnUpdate="0"/>
-    <default expression="" field="rodzaj" applyOnUpdate="0"/>
   </defaults>
   <constraints>
     <constraint field="gml_id" unique_strength="0" notnull_strength="1" constraints="1" exp_strength="0"/>
@@ -310,7 +387,6 @@
     <constraint field="oznaczenieZmiany" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
     <constraint field="zrodloDanychGeometrycznych" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
     <constraint field="kodKarto250k" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="rodzaj" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
   </constraints>
   <constraintExpressions>
     <constraint field="gml_id" exp="" desc=""/>
@@ -321,7 +397,6 @@
     <constraint field="oznaczenieZmiany" exp="" desc=""/>
     <constraint field="zrodloDanychGeometrycznych" exp="" desc=""/>
     <constraint field="kodKarto250k" exp="" desc=""/>
-    <constraint field="rodzaj" exp="" desc=""/>
   </constraintExpressions>
   <expressionfields/>
   <attributeactions>
@@ -333,7 +408,6 @@
       <column hidden="0" name="lokalnyId" width="-1" type="field"/>
       <column hidden="0" name="przestrzenNazw" width="-1" type="field"/>
       <column hidden="0" name="poczatekWersjiObiektu" width="-1" type="field"/>
-      <column hidden="0" name="rodzaj" width="-1" type="field"/>
       <column hidden="0" name="wersja" width="-1" type="field"/>
       <column hidden="0" name="oznaczenieZmiany" width="-1" type="field"/>
       <column hidden="0" name="zrodloDanychGeometrycznych" width="-1" type="field"/>
@@ -370,6 +444,7 @@ def my_form_open(dialog, layer, feature):
   <featformsuppress>0</featformsuppress>
   <editorlayout>generatedlayout</editorlayout>
   <editable>
+    <field name="charakter" editable="1"/>
     <field name="czyObiektBDOO" editable="1"/>
     <field name="gml_id" editable="1"/>
     <field name="kodKarto250k" editable="1"/>
@@ -378,6 +453,7 @@ def my_form_open(dialog, layer, feature):
     <field name="poczatekWersjiObiektu" editable="1"/>
     <field name="przestrzenNazw" editable="1"/>
     <field name="rodzaj" editable="1"/>
+    <field name="roslinnosc" editable="1"/>
     <field name="wersja" editable="1"/>
     <field name="wersjaId" editable="1"/>
     <field name="x_aktualnoscA" editable="1"/>
@@ -400,6 +476,7 @@ def my_form_open(dialog, layer, feature):
     <field name="zrodloDanychGeometrycznych" editable="1"/>
   </editable>
   <labelOnTop>
+    <field labelOnTop="0" name="charakter"/>
     <field labelOnTop="0" name="czyObiektBDOO"/>
     <field labelOnTop="0" name="gml_id"/>
     <field labelOnTop="0" name="kodKarto250k"/>
@@ -408,6 +485,7 @@ def my_form_open(dialog, layer, feature):
     <field labelOnTop="0" name="poczatekWersjiObiektu"/>
     <field labelOnTop="0" name="przestrzenNazw"/>
     <field labelOnTop="0" name="rodzaj"/>
+    <field labelOnTop="0" name="roslinnosc"/>
     <field labelOnTop="0" name="wersja"/>
     <field labelOnTop="0" name="wersjaId"/>
     <field labelOnTop="0" name="x_aktualnoscA"/>
@@ -436,7 +514,6 @@ def my_form_open(dialog, layer, feature):
     <field reuseLastValue="0" name="oznaczenieZmiany"/>
     <field reuseLastValue="0" name="poczatekWersjiObiektu"/>
     <field reuseLastValue="0" name="przestrzenNazw"/>
-    <field reuseLastValue="0" name="rodzaj"/>
     <field reuseLastValue="0" name="wersja"/>
     <field reuseLastValue="0" name="zrodloDanychGeometrycznych"/>
   </reuseLastValue>
