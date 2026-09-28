@@ -21,73 +21,73 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import *
-from qgis.core import *
-from qgis.utils import *
-from qgis.gui import *
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction,QFileDialog,QProgressBar,QMessageBox
 
-# Initialize Qt resources from file resources.py
-from . import resources
-from shutil import copyfile
-import os.path
 import re
-import time
 import shutil
-from pathlib import Path
+import zipfile
+from pathlib import Path, PurePosixPath
+
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator, Qt
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QApplication,
+    QFileDialog,
+    QMenu,
+    QMessageBox,
+    QProgressBar,
+)
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsMessageLog,
+    QgsProject,
+    QgsVectorLayer,
+)
+
+from . import resources
+from .constants import WOJEWODZTWA
+from .geoportal import GeoportalDownloadDialog, download_geoportal_zip
+from .help_tools import download_bdoo_regulation, show_about_dialog
+from .layer_specs import LAYER_SPECS
+
+
+# Obsługujemy historycznie spotykane rozszerzenia GML/XML oraz SHP.
+# Typowa przestrzeń nazw ma postać PL.PZGiK.201.14. Wyrażenie dopuszcza też
+# dodatkowy człon (np. BDOO) przed identyfikatorem terytorialnym, aby nie
+# blokować paczek o nieco innej konwencji nazewniczej.
+_DATA_FILE_RE = re.compile(
+    r"^(PL\.PZGiK\.201(?:\.[A-Za-z0-9_-]+)*)__OT_.+\.(gml|xml|shp)$",
+    re.IGNORECASE,
+)
+
+_SETTINGS_GROUP = "BDOO_GML_Loader"
 
 
 class BDOO_GML_Loader:
-    """QGIS Plugin Implementation."""
+    """Główna klasa wtyczki BDOO_GML_Loader."""
 
     def __init__(self, iface):
-        """Constructor.
-
-        :param iface: An interface instance that will be passed to this class
-            which provides the hook by which you can manipulate the QGIS
-            application at run time.
-        :type iface: QgsInterface
-        """
-        # Save reference to the QGIS interface
+        """Zapisz interfejs QGIS i przygotuj tłumaczenia wtyczki."""
         self.iface = iface
-        # initialize plugin directory
-        self.plugin_dir = os.path.dirname(__file__)
-        # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'BDOO_GML_Loader_{}.qm'.format(locale))
+        self.plugin_dir = Path(__file__).resolve().parent
 
-        if os.path.exists(locale_path):
+        locale = str(QSettings().value("locale/userLocale", "en"))[:2]
+        locale_path = self.plugin_dir / "i18n" / f"BDOO_GML_Loader_{locale}.qm"
+        if locale_path.is_file():
             self.translator = QTranslator()
-            self.translator.load(locale_path)
+            self.translator.load(str(locale_path))
             QCoreApplication.installTranslator(self.translator)
 
-        # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&BDOO_GML')
-
-        # Check if plugin was started the first time in current QGIS session
-        # Must be set in initGui() to survive plugin reloads
+        self.menu = self.tr("&BDOO_GML")
         self.first_start = None
+        self._available_source_uris = None
 
-    # noinspection PyMethodMayBeStatic
-    def tr(self, message):
-        """Get the translation for a string using Qt translation API.
-
-        We implement this ourselves since we do not inherit QObject.
-
-        :param message: String for translation.
-        :type message: str, QString
-
-        :returns: Translated version of message.
-        :rtype: QString
-        """
-        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('BDOO_GML_Loader', message)
-
+    @staticmethod
+    def tr(message):
+        """Zwróć przetłumaczony tekst interfejsu."""
+        return QCoreApplication.translate("BDOO_GML_Loader", message)
 
     def add_action(
         self,
@@ -99,558 +99,546 @@ class BDOO_GML_Loader:
         add_to_toolbar=True,
         status_tip=None,
         whats_this=None,
-        parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
-        :type icon_path: str
-
-        :param text: Text that should be shown in menu items for this action.
-        :type text: str
-
-        :param callback: Function to be called when the action is triggered.
-        :type callback: function
-
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
-        :type enabled_flag: bool
-
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
-        :type add_to_menu: bool
-
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
-        :type add_to_toolbar: bool
-
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
-        :type status_tip: str
-
-        :param parent: Parent widget for the new action. Defaults None.
-        :type parent: QWidget
-
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
-
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
-        :rtype: QAction
-        """
-
-        icon = QIcon(icon_path)
-        action = QAction(icon, text, parent)
+        parent=None,
+    ):
+        """Dodaj akcję wtyczki do menu i opcjonalnie do paska narzędzi."""
+        action = QAction(QIcon(icon_path), text, parent)
         action.triggered.connect(callback)
         action.setEnabled(enabled_flag)
 
         if status_tip is not None:
             action.setStatusTip(status_tip)
-
+            action.setToolTip(status_tip)
         if whats_this is not None:
             action.setWhatsThis(whats_this)
-
         if add_to_toolbar:
-            # Adds plugin icon to Plugins toolbar
             self.iface.addToolBarIcon(action)
-
         if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
+            self.iface.addPluginToMenu(self.menu, action)
 
         self.actions.append(action)
-
         return action
 
     def initGui(self):
-        """Create the menu entries and toolbar icons inside the QGIS GUI."""
-
-        icon_path = ':/plugins/BDOO_GML_Loader/icon.png'
+        """Utwórz pozycję menu i ikonę wtyczki."""
         self.add_action(
-            icon_path,
-            text=self.tr(u'Import BDOO GML'),
+            str(self.plugin_dir / "icon.png"),
+            text=self.tr("Wczytaj dane BDOO"),
             callback=self.run,
-            parent=self.iface.mainWindow())
-
-        # will be set False in run()
+            status_tip=self.tr(
+                "Wczytaj dane BDOO z katalogu, pliku ZIP albo pobierz je z Geoportalu."
+            ),
+            whats_this=self.tr(
+                "Pozwala wskazać lokalne dane BDOO lub pobrać wojewódzką paczkę "
+                "danych z Geoportalu GUGiK."
+            ),
+            parent=self.iface.mainWindow(),
+        )
         self.first_start = True
 
-
     def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
+        """Usuń elementy interfejsu dodane przez wtyczkę."""
         for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&BDOO_GML'),
-                action)
+            self.iface.removePluginMenu(self.menu, action)
             self.iface.removeToolBarIcon(action)
 
-
     def run(self):
-        """Run method that performs all the real work"""
-
-        if self.first_start == True:
+        """Wybierz źródło BDOO, zweryfikuj je i wczytaj warstwy."""
+        if self.first_start:
             self.first_start = False
-        
-        wojewodztwo ={
-        "02" : "DOLNOŚLĄSKIE",
-        "04" : "KUJAWSKO-POMORSKIE",
-        "06" : "LUBELSKIE",
-        "08" : "LUBUSKIE",
-        "10" : "ŁÓDZKIE",
-        "12" : "MAŁOPOLSKIE",
-        "14" : "MAZOWIECKIE",
-        "16" : "OPOLSKIE",
-        "18" : "PODKARPACKIE",
-        "20" : "PODLASKIE",
-        "22" : "POMORSKIE",
-        "24" : "ŚLĄSKIE",
-        "26" : "ŚWIĘTOKRZYSKIE",
-        "28" : "WARMIŃSKO-MAZURSKIE",
-        "30" : "WIELKOPOLSKIE",
-        "32" : "ZACHODNIOPOMORSKIE"}
-        
-        folder_path = QFileDialog.getExistingDirectory(self.iface.mainWindow(),'Wybierz folder BDOO')
-        path = folder_path.replace("\\", "/")+"/"
-        result = False
-        files = None
-        
-        if folder_path == "":
+
+        source = self._select_source()
+        if source is None:
             return
-        
-        for file in os.listdir(folder_path):
-            if (file.endswith(".gml") or file.endswith(".shp")) and re.match("PL\.PZG[i|I]K\.201\.\d{2}(__OT_)", file):
-                    result = True
-                    przestrzen_nazw = str(re.split("__", file)[0])
-                    if file.endswith(".gml"):
-                        formatPliku = "gml"
-        
-        if result:
-            qmlPath = Path(QgsApplication.qgisSettingsDirPath())/Path("python/plugins/BDOO_GML_Loader/BDOO_QML/")
-            svgPluginPath = Path(QgsApplication.qgisSettingsDirPath())/Path("python/plugins/BDOO_GML_Loader/BDOO_SVG/KARTO250k/")
-            svgQGISpath = Path(QgsApplication.qgisSettingsDirPath())/Path("SVG/")
-            
-            #kopiuje pliki SVG na konto uzytkownika
+
+        dataset = self._prepare_source(*source)
+        if dataset is None:
+            return
+
+        self._load_dataset(**dataset)
+
+    def _close_plugin_windows(self):
+        """Zamknij wszystkie aktualnie otwarte okna należące do wtyczki."""
+        for widget in QApplication.topLevelWidgets():
+            if widget.property("BDOO_GML_Loader_window"):
+                widget.close()
+
+    def _select_source(self):
+        """Pozwól wybrać lokalne dane BDOO albo pobrać je z Geoportalu."""
+        settings = QSettings()
+        start_path = str(settings.value(f"{_SETTINGS_GROUP}/lastSource", ""))
+
+        choice = QMessageBox(self.iface.mainWindow())
+        choice.setProperty("BDOO_GML_Loader_window", True)
+        choice.setWindowTitle("Źródło danych BDOO")
+        choice.setIcon(QMessageBox.Question)
+        choice.setText("Wybierz sposób wczytania danych BDOO.")
+
+        folder_button = choice.addButton("katalog", QMessageBox.AcceptRole)
+        folder_button.setToolTip(
+            "Wskaż katalog zawierający dane BDOO w formacie GML/XML albo SHP."
+        )
+        zip_button = choice.addButton("plik ZIP", QMessageBox.AcceptRole)
+        zip_button.setToolTip(
+            "Wskaż plik ZIP zawierający dane BDOO. Archiwum nie będzie rozpakowywane."
+        )
+        geoportal_button = choice.addButton("Geoportal", QMessageBox.ActionRole)
+        geoportal_button.setToolTip(
+            "Wybierz województwo, pobierz jego paczkę BDOO z Geoportalu GUGiK "
+            "i automatycznie wczytaj ją do QGIS."
+        )
+
+        # HelpRole nie zamyka okna źródła danych. Użytkownik może otworzyć
+        # rozporządzenie lub informacje, a następnie wrócić do wyboru danych.
+        help_button = choice.addButton("Pomoc", QMessageBox.HelpRole)
+        help_button.setToolTip(
+            "Otwórz menu pomocy z rozporządzeniem BDOO i informacjami o wtyczce."
+        )
+        help_menu = QMenu(help_button)
+        help_menu.setToolTipsVisible(True)
+
+        regulation_action = help_menu.addAction("Rozporządzenie BDOO (PDF)")
+        regulation_action.setToolTip(
+            "Pobierz oficjalny tekst rozporządzenia dotyczącego BDOO z systemu ELI."
+        )
+        regulation_action.triggered.connect(lambda: download_bdoo_regulation(choice))
+
+        help_menu.addSeparator()
+        info_action = help_menu.addAction("Informacje")
+        info_action.setToolTip(
+            "Wyświetl informacje o wtyczce, jej wersji, właścicielu i repozytorium."
+        )
+        info_action.triggered.connect(
+            lambda: show_about_dialog(
+                choice,
+                self.plugin_dir,
+                self._close_plugin_windows,
+            )
+        )
+        help_button.setMenu(help_menu)
+
+        cancel_button = choice.addButton("Anuluj", QMessageBox.RejectRole)
+        cancel_button.setToolTip("Zamknij okno bez wczytywania danych.")
+
+        choice.exec_()
+        clicked = choice.clickedButton()
+
+        if clicked is folder_button:
+            folder = QFileDialog.getExistingDirectory(
+                self.iface.mainWindow(),
+                "Wybierz katalog BDOO",
+                start_path,
+            )
+            if not folder:
+                return None
+
+            folder_path = Path(folder)
+            settings.setValue(f"{_SETTINGS_GROUP}/lastSource", str(folder_path.parent))
+            return "folder", folder_path
+
+        if clicked is zip_button:
+            zip_name, _ = QFileDialog.getOpenFileName(
+                self.iface.mainWindow(),
+                "Wybierz plik ZIP z danymi BDOO",
+                start_path,
+                "Archiwa ZIP (*.zip)",
+            )
+            if not zip_name:
+                return None
+
+            zip_path = Path(zip_name)
+            settings.setValue(f"{_SETTINGS_GROUP}/lastSource", str(zip_path.parent))
+            return "zip", zip_path
+
+        if clicked is geoportal_button:
+            dialog = GeoportalDownloadDialog(self.iface.mainWindow())
+            dialog.setProperty("BDOO_GML_Loader_window", True)
+            if dialog.exec_() != dialog.Accepted:
+                return None
+
+            zip_path = download_geoportal_zip(
+                self.iface.mainWindow(),
+                dialog.selected_teryt(),
+                dialog.destination_directory(),
+            )
+            if zip_path is None:
+                return None
+
+            settings.setValue(f"{_SETTINGS_GROUP}/lastSource", str(zip_path.parent))
+            return "zip", zip_path
+
+        return None
+
+    def _prepare_source(self, source_type, source_path):
+        """Rozpoznaj przestrzeń nazw i format danych dla katalogu albo ZIP."""
+        try:
+            if source_type == "folder":
+                records = self._scan_folder(source_path)
+            else:
+                records = self._scan_zip(source_path)
+        except (OSError, zipfile.BadZipFile) as exc:
+            QMessageBox.critical(
+                self.iface.mainWindow(),
+                "BDOO",
+                f"Nie można odczytać wskazanego źródła:\n{exc}",
+            )
+            return None
+
+        if not records:
+            QMessageBox.warning(
+                self.iface.mainWindow(),
+                "BDOO",
+                "Nie znaleziono plików BDOO w formacie GML/XML ani SHP.",
+            )
+            return None
+
+        locations = sorted({(record["parent"], record["namespace"]) for record in records})
+        if len(locations) != 1:
+            names = "\n".join(
+                f"• {namespace}" + (f" ({parent})" if parent else "")
+                for parent, namespace in locations[:10]
+            )
+            QMessageBox.warning(
+                self.iface.mainWindow(),
+                "BDOO",
+                "Wskazane źródło zawiera więcej niż jeden zbiór BDOO. "
+                "Wskaż katalog lub ZIP zawierający jeden zbiór.\n\n" + names,
+            )
+            return None
+
+        parent, namespace = locations[0]
+        selected_records = [
+            record
+            for record in records
+            if record["parent"] == parent and record["namespace"] == namespace
+        ]
+        formats = sorted({record["format"] for record in selected_records})
+        data_format = self._choose_format(formats)
+        if data_format is None:
+            return None
+
+        selected_records = [
+            record for record in selected_records if record["format"] == data_format
+        ]
+
+        if source_type == "folder":
+            data_directory = source_path.resolve()
+            if parent:
+                data_directory = data_directory / Path(parent)
+            prefix = data_directory.as_posix().rstrip("/") + "/"
+            self._available_source_uris = None
+        else:
+            # GDAL/QGIS czyta GML/XML i SHP bezpośrednio z ZIP przez /vsizip/.
+            # Dzięki temu nie tworzymy katalogów tymczasowych i nie pozostawiamy
+            # rozpakowanych danych na dysku użytkownika.
+            zip_prefix = f"/vsizip/{source_path.resolve().as_posix()}"
+            if parent:
+                zip_prefix += "/" + parent.strip("/")
+            prefix = zip_prefix.rstrip("/") + "/"
+            self._available_source_uris = {
+                prefix + PurePosixPath(record["member"]).name
+                for record in selected_records
+            }
+
+        return {
+            "path": prefix,
+            "przestrzen_nazw": namespace,
+            "formatPliku": data_format,
+        }
+
+    @staticmethod
+    def _scan_folder(folder_path):
+        """Zwróć rozpoznane pliki BDOO z katalogu lub pojedynczego podkatalogu."""
+        records = []
+        folder_path = folder_path.resolve()
+
+        for item in folder_path.rglob("*"):
+            if not item.is_file():
+                continue
+
+            match = _DATA_FILE_RE.match(item.name)
+            if not match:
+                continue
+
+            relative_parent = item.parent.relative_to(folder_path).as_posix()
+            parent = "" if relative_parent == "." else relative_parent
+            records.append(
+                {
+                    "parent": parent,
+                    "namespace": match.group(1),
+                    "format": match.group(2).lower(),
+                    "member": item.name,
+                }
+            )
+
+        return records
+
+    @staticmethod
+    def _scan_zip(zip_path):
+        """Zwróć rozpoznane pliki BDOO z ZIP, także z katalogu nadrzędnego."""
+        records = []
+        with zipfile.ZipFile(zip_path, "r") as archive:
+            for member in archive.namelist():
+                if member.endswith("/"):
+                    continue
+
+                pure = PurePosixPath(member)
+                match = _DATA_FILE_RE.match(pure.name)
+                if not match:
+                    continue
+
+                parent = "" if str(pure.parent) == "." else pure.parent.as_posix()
+                records.append(
+                    {
+                        "parent": parent,
+                        "namespace": match.group(1),
+                        "format": match.group(2).lower(),
+                        "member": member,
+                    }
+                )
+
+        return records
+
+    def _choose_format(self, formats):
+        """W razie obecności SHP i GML/XML pozwól użytkownikowi wybrać format."""
+        formats = set(formats)
+        text_formats = [fmt for fmt in ("gml", "xml") if fmt in formats]
+        has_shp = "shp" in formats
+
+        if text_formats and not has_shp:
+            # Preferujemy GML, jeżeli źródło zawiera równolegle GML i XML.
+            return text_formats[0]
+        if has_shp and not text_formats:
+            return "shp"
+        if not text_formats and not has_shp:
+            return None
+
+        dialog = QMessageBox(self.iface.mainWindow())
+        dialog.setWindowTitle("Format danych BDOO")
+        dialog.setIcon(QMessageBox.Question)
+        dialog.setText(
+            "Znaleziono jednocześnie dane GML/XML i SHP. Wybierz format do wczytania."
+        )
+        gml_button = dialog.addButton("Wczytaj dane GML / XML", QMessageBox.AcceptRole)
+        gml_button.setToolTip(
+            "Wczytaj dane GML/XML i zastosuj style kartograficzne wtyczki."
+        )
+        shp_button = dialog.addButton("Wczytaj dane SHP", QMessageBox.AcceptRole)
+        shp_button.setToolTip(
+            "Wczytaj dane SHP i zastosuj style kartograficzne wtyczki."
+        )
+        cancel_button = dialog.addButton("Anuluj", QMessageBox.RejectRole)
+        cancel_button.setToolTip("Zamknij okno bez wczytywania danych.")
+        dialog.exec_()
+
+        clicked = dialog.clickedButton()
+        if clicked is gml_button:
+            return text_formats[0]
+        if clicked is shp_button:
+            return "shp"
+        return None
+
+    def _source_exists(self, uri):
+        """Sprawdź istnienie pliku zarówno na dysku, jak i wewnątrz ZIP."""
+        if self._available_source_uris is not None:
+            return uri in self._available_source_uris
+        return Path(uri).is_file()
+
+    def _install_svg_symbols(self):
+        """Skopiuj symbole KARTO250k do katalogu SVG profilu QGIS."""
+        source = self.plugin_dir / "BDOO_SVG" / "KARTO250k"
+        destination = Path(QgsApplication.qgisSettingsDirPath()) / "SVG" / "KARTO250k"
+
+        if not source.is_dir():
+            QgsMessageLog.logMessage(
+                f"Nie znaleziono katalogu symboli: {source}",
+                "BDOO_GML_Loader",
+                Qgis.Warning,
+            )
+            return
+
+        try:
+            shutil.copytree(source, destination, dirs_exist_ok=True)
+        except OSError as exc:
+            QgsMessageLog.logMessage(
+                f"Nie udało się skopiować symboli KARTO250k: {exc}",
+                "BDOO_GML_Loader",
+                Qgis.Warning,
+            )
+
+    @staticmethod
+    def _set_progress(progress, value):
+        """Ustaw postęp i pozwól Qt odświeżyć interfejs podczas importu."""
+        progress.setValue(value)
+        QCoreApplication.processEvents()
+
+    def _add_configured_layer(
+        self,
+        spec,
+        path,
+        przestrzen_nazw,
+        formatPliku,
+        target_group,
+        root,
+        qml_path,
+    ):
+        """Wczytaj pojedynczą warstwę opisaną w ``LAYER_SPECS``."""
+        source_uri = f"{path}{przestrzen_nazw}__{spec['source']}.{formatPliku}"
+        if not self._source_exists(source_uri):
+            return None
+
+        style_path = qml_path / spec["style"]
+        if not style_path.is_file():
+            QgsMessageLog.logMessage(
+                f"Pominięto warstwę {spec['name']}: brak stylu {style_path.name}.",
+                "BDOO_GML_Loader",
+                Qgis.Warning,
+            )
+            return None
+
+        layer = QgsVectorLayer(
+            source_uri,
+            f"{przestrzen_nazw}__{spec['name']}",
+            "ogr",
+        )
+        if not layer.isValid():
+            QgsMessageLog.logMessage(
+                f"Nie udało się utworzyć warstwy z: {source_uri}",
+                "BDOO_GML_Loader",
+                Qgis.Warning,
+            )
+            return None
+
+        if layer.featureCount() <= 0:
+            return None
+
+        QgsProject.instance().addMapLayer(layer, False)
+        target_group.addLayer(layer)
+        layer.loadNamedStyle(str(style_path))
+
+        layer_node = root.findLayer(layer.id())
+        if layer_node is not None:
+            layer_node.setExpanded(False)
+
+        return layer
+
+    @staticmethod
+    def _region_code(namespace):
+        """Zwróć dwucyfrowy kod województwa z przestrzeni nazw, jeżeli występuje."""
+        match = re.search(r"(?:^|\.)(\d{2})$", namespace)
+        return match.group(1) if match else ""
+
+    def _group_name(self, namespace):
+        """Zbuduj czytelną nazwę grupy warstw dla zbioru BDOO."""
+        code = self._region_code(namespace)
+        if code in WOJEWODZTWA:
+            if code == "00":
+                return "BDOO POLSKA"
+            return f"BDOO WOJEWÓDZTWO {WOJEWODZTWA[code]}"
+        return f"BDOO {namespace}"
+
+    def _dataset_already_loaded(self, root, namespace, group_name):
+        """Sprawdź, czy ten sam zbiór BDOO jest już obecny w projekcie."""
+        for child in root.children():
             try:
-                shutil.copytree(svgPluginPath, svgQGISpath/Path("KARTO250k"))
-            except:
-                pass
-            
-            progressMessageBar = iface.messageBar().createMessage("Postęp importowania BDOO...")
-            progress = QProgressBar()
-            progress.setMaximum(33)
-            progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
-            progressMessageBar.layout().addWidget(progress)
-            iface.messageBar().pushWidget(progressMessageBar, Qgis.Info)
-            
-            teryt = przestrzen_nazw[-2:]
-            nazwa_wojewodztwa = wojewodztwo[teryt]
-            groupName = 'BDOO WOJEWÓDZTWO '+nazwa_wojewodztwa
-            root = QgsProject.instance().layerTreeRoot()
-            group = root.addGroup(groupName)
-            group.setExpanded(False)
-            groupNapisy = group.addGroup(przestrzen_nazw+' napisy')
-            groupNapisy.setExpanded(False)
-            groupPunktowe = group.addGroup(przestrzen_nazw+' znaki punktowe')
-            groupPunktowe.setExpanded(False)
-            
-            if os.path.exists(path+przestrzen_nazw+'__OT_ADMS_P.'+formatPliku):
-                copyfile(qmlPath/Path("OT_ADMS_P__nazwy_miejscowosci.qml"), path+przestrzen_nazw+'__nazwy_miejscowosci.qml')
-                nazwy_miejscowosci = QgsVectorLayer(path+przestrzen_nazw+"__OT_ADMS_P."+formatPliku, przestrzen_nazw+"__nazwy miejscowości","ogr")
-                if nazwy_miejscowosci.featureCount()>0:
-                    QgsProject.instance().addMapLayer(nazwy_miejscowosci, False)
-                    groupNapisy.addLayer(nazwy_miejscowosci)
-                    nazwy_miejscowosci.loadNamedStyle(path+przestrzen_nazw+'__nazwy_miejscowosci.qml')
-                    myLayerNode = root.findLayer(nazwy_miejscowosci.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    nazwy_miejscowosci = None
-            progress.setValue(1)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SKDR_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SKDR_L__szlaki_drogowe.qml"), path+przestrzen_nazw+'__szlaki_drogowe.qml')
-                szlaki_drogowe = QgsVectorLayer(path+przestrzen_nazw+"__OT_SKDR_L."+formatPliku, przestrzen_nazw+"__szlaki drogowe","ogr")
-                if szlaki_drogowe.featureCount()>0:
-                    QgsProject.instance().addMapLayer(szlaki_drogowe, False)
-                    groupNapisy.addLayer(szlaki_drogowe)
-                    szlaki_drogowe.loadNamedStyle(path+przestrzen_nazw+'__szlaki_drogowe.qml')
-                    myLayerNode = root.findLayer(szlaki_drogowe.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    szlaki_drogowe = None
-            progress.setValue(2)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SWRS_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SWRS_L__nazwy_rzek.qml"), path+przestrzen_nazw+'__nazwy_rzek.qml')
-                nazwy_rzek = QgsVectorLayer(path+przestrzen_nazw+"__OT_SWRS_L."+formatPliku, przestrzen_nazw+"__nazwy rzek","ogr")
-                if nazwy_rzek.featureCount()>0:
-                    QgsProject.instance().addMapLayer(nazwy_rzek, False)
-                    groupNapisy.addLayer(nazwy_rzek)
-                    nazwy_rzek.loadNamedStyle(path+przestrzen_nazw+'__nazwy_rzek.qml')
-                    myLayerNode = root.findLayer(nazwy_rzek.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    nazwy_rzek = None
-            progress.setValue(3)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTWP_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTWP_A__nazwy_wod_powierzchniowych.qml"), path+przestrzen_nazw+'__nazwy_wod_powierzchniowych.qml')
-                nazwy_wod_powierzchniowych = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTWP_A."+formatPliku, przestrzen_nazw+"__nazwy wód powierzchniowych","ogr")
-                if nazwy_wod_powierzchniowych.featureCount()>0:
-                    QgsProject.instance().addMapLayer(nazwy_wod_powierzchniowych, False)
-                    groupNapisy.addLayer(nazwy_wod_powierzchniowych)
-                    nazwy_wod_powierzchniowych.loadNamedStyle(path+przestrzen_nazw+'__nazwy_wod_powierzchniowych.qml')
-                    myLayerNode = root.findLayer(nazwy_wod_powierzchniowych.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    nazwy_wod_powierzchniowych = None
-            progress.setValue(4)
-            if os.path.exists(path+przestrzen_nazw+'__OT_TCPN_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_TCPN_A__nazwy_parkow_narodowych.qml"), path+przestrzen_nazw+'__nazwy_parkow_narodowych.qml')
-                nazwy_parkow_narodowych = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCPN_A."+formatPliku, przestrzen_nazw+"__nazwy parków narodowych","ogr")
-                if nazwy_parkow_narodowych.featureCount()>0:
-                    QgsProject.instance().addMapLayer(nazwy_parkow_narodowych, False)
-                    groupNapisy.addLayer(nazwy_parkow_narodowych)
-                    nazwy_parkow_narodowych.loadNamedStyle(path+przestrzen_nazw+'__nazwy_parkow_narodowych.qml')
-                    myLayerNode = root.findLayer(nazwy_parkow_narodowych.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    nazwy_parkow_narodowych = None
-            progress.setValue(5)
-            if os.path.exists(path+przestrzen_nazw+'__OT_TCRZ_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_TCRZ_A__nazwy_rezerwatow.qml"), path+przestrzen_nazw+'__nazwy_rezerwatow.qml')
-                nazwy_rezerwatow = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCRZ_A."+formatPliku, przestrzen_nazw+"__nazwy rezerwatów","ogr")
-                if nazwy_rezerwatow.featureCount()>0:
-                    QgsProject.instance().addMapLayer(nazwy_rezerwatow, False)
-                    groupNapisy.addLayer(nazwy_rezerwatow)
-                    nazwy_rezerwatow.loadNamedStyle(path+przestrzen_nazw+'__nazwy_rezerwatow.qml')
-                    myLayerNode = root.findLayer(nazwy_rezerwatow.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    nazwy_rezerwatow = None
-            progress.setValue(6)
-            if os.path.exists(path+przestrzen_nazw+'__OT_TCPK_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_TCPK_A__nazwy_parkow_krajobrazowych.qml"), path+przestrzen_nazw+'__nazwy_parkow_krajobrazowych.qml')
-                nazwy_parkow_krajobrazowych = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCPK_A."+formatPliku, przestrzen_nazw+"__nazwy parków krajobrazowych","ogr")
-                if nazwy_parkow_krajobrazowych.featureCount()>0:
-                    QgsProject.instance().addMapLayer(nazwy_parkow_krajobrazowych, False)
-                    groupNapisy.addLayer(nazwy_parkow_krajobrazowych)
-                    nazwy_parkow_krajobrazowych.loadNamedStyle(path+przestrzen_nazw+'__nazwy_parkow_krajobrazowych.qml')
-                    myLayerNode = root.findLayer(nazwy_parkow_krajobrazowych.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    nazwy_parkow_krajobrazowych = None
-            progress.setValue(7)
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUKO_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUKO_A__nazwy_kompleksow.qml"), path+przestrzen_nazw+'__nazwy_kompleksow.qml')
-                nazwy_kompleksow = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUKO_A."+formatPliku, przestrzen_nazw+"__nazwy kompleksów","ogr")
-                if nazwy_kompleksow.featureCount()>0:
-                    QgsProject.instance().addMapLayer(nazwy_kompleksow, False)
-                    groupNapisy.addLayer(nazwy_kompleksow)
-                    nazwy_kompleksow.loadNamedStyle(path+przestrzen_nazw+'__nazwy_kompleksow.qml')
-                    myLayerNode = root.findLayer(nazwy_kompleksow.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    nazwy_kompleksow = None
-            progress.setValue(8)
-            if os.path.exists(path+przestrzen_nazw+'__OT_ADMS_P.'+formatPliku):
-                copyfile(qmlPath/Path("OT_ADMS_P.qml"), path+przestrzen_nazw+'__OT_ADMS_P.qml')
-                OT_ADMS_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_ADMS_P."+formatPliku, przestrzen_nazw+"__OT_ADMS_P","ogr")
-                if OT_ADMS_P.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_ADMS_P, False)
-                    groupPunktowe.addLayer(OT_ADMS_P)
-                    OT_ADMS_P.loadNamedStyle(path+przestrzen_nazw+'__OT_KUSK_A opis.qml')
-                    myLayerNode = root.findLayer(OT_ADMS_P.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_ADMS_P = None
-            progress.setValue(9)
-            if os.path.exists(path+przestrzen_nazw+'__OT_TCRZ_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_TCRZ_A_pkt.qml"), path+przestrzen_nazw+'__OT_TCRZ_A_pkt.qml')
-                OT_TCRZ_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCRZ_A."+formatPliku, przestrzen_nazw+"__OT_TCRZ_A","ogr")
-                if OT_TCRZ_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_TCRZ_A, False)
-                    groupPunktowe.addLayer(OT_TCRZ_A)
-                    OT_TCRZ_A.loadNamedStyle(path+przestrzen_nazw+'__OT_TCRZ_A_pkt.qml')
-                    myLayerNode = root.findLayer(OT_TCRZ_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_TCRZ_A = None
-            progress.setValue(10)
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUPG_P.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUPG_P.qml"), path+przestrzen_nazw+'__OT_KUPG_P.qml')
-                OT_KUPG_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUPG_P."+formatPliku, przestrzen_nazw+"__OT_KUPG_P","ogr")
-                if OT_KUPG_P.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_KUPG_P, False)
-                    groupPunktowe.addLayer(OT_KUPG_P)
-                    OT_KUPG_P.loadNamedStyle(path+przestrzen_nazw+'__OT_KUPG_P.qml')
-                    myLayerNode = root.findLayer(OT_KUPG_P.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_KUPG_P = None
-            progress.setValue(11)
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUKO_P.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUKO_P.qml"), path+przestrzen_nazw+'__OT_KUKO_P.qml')
-                OT_KUKO_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUKO_P."+formatPliku, przestrzen_nazw+"__OT_KUKO_P","ogr")
-                if OT_KUKO_P.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_KUKO_P, False)
-                    groupPunktowe.addLayer(OT_KUKO_P)
-                    OT_KUKO_P.loadNamedStyle(path+przestrzen_nazw+'__OT_KUKO_P.qml')
-                    myLayerNode = root.findLayer(OT_KUKO_P.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_KUKO_P = None
-            progress.setValue(12)
-            if os.path.exists(path+przestrzen_nazw+'__OT_OIKM_P.'+formatPliku):
-                copyfile(qmlPath/Path("OT_OIKM_P.qml"), path+przestrzen_nazw+'__OT_OIKM_P.qml')
-                OT_OIKM_P = QgsVectorLayer(path+przestrzen_nazw+"__OT_OIKM_P."+formatPliku, przestrzen_nazw+"__OT_OIKM_P","ogr")
-                if OT_OIKM_P.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_OIKM_P, False)
-                    groupPunktowe.addLayer(OT_OIKM_P)
-                    OT_OIKM_P.loadNamedStyle(path+przestrzen_nazw+'__OT_OIKM_P.qml')
-                    myLayerNode = root.findLayer(OT_OIKM_P.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_OIKM_P = None
-            progress.setValue(13)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SULN_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SULN_L.qml"), path+przestrzen_nazw+'__OT_SULN_L.qml')
-                OT_SULN_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SULN_L."+formatPliku, przestrzen_nazw+"__OT_SULN_L","ogr")
-                if OT_SULN_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_SULN_L, False)
-                    group.addLayer(OT_SULN_L)
-                    OT_SULN_L.loadNamedStyle(path+przestrzen_nazw+'__OT_SULN_L.qml')
-                    myLayerNode = root.findLayer(OT_SULN_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_SULN_L = None
-            progress.setValue(14)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SKPP_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SKPP_L.qml"), path+przestrzen_nazw+'__OT_SKPP_L.qml')
-                OT_SKPP_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SKPP_L."+formatPliku, przestrzen_nazw+"__OT_SKPP_L","ogr")
-                if OT_SKPP_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_SKPP_L, False)
-                    group.addLayer(OT_SKPP_L)
-                    OT_SKPP_L.loadNamedStyle(path+przestrzen_nazw+'__OT_SKPP_L.qml')
-                    myLayerNode = root.findLayer(OT_SKPP_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_SKPP_L = None
-            progress.setValue(15)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SKTR_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SKTR_L.qml"), path+przestrzen_nazw+'__OT_SKTR_L.qml')
-                OT_SKTR_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SKTR_L."+formatPliku, przestrzen_nazw+"__OT_SKTR_L","ogr")
-                if OT_SKTR_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_SKTR_L, False)
-                    group.addLayer(OT_SKTR_L)
-                    OT_SKTR_L.loadNamedStyle(path+przestrzen_nazw+'__OT_SKTR_L.qml')
-                    myLayerNode = root.findLayer(OT_SKTR_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_SKTR_L = None
-            progress.setValue(16)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SKDR_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SKDR_L.qml"), path+przestrzen_nazw+'__OT_SKDR_L.qml')
-                OT_SKDR_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SKDR_L."+formatPliku, przestrzen_nazw+"__OT_SKDR_L","ogr")
-                if OT_SKDR_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_SKDR_L, False)
-                    group.addLayer(OT_SKDR_L)
-                    OT_SKDR_L.loadNamedStyle(path+przestrzen_nazw+'__OT_SKDR_L.qml')
-                    myLayerNode = root.findLayer(OT_SKDR_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_SKDR_L = None
-            progress.setValue(17)
-            if os.path.exists(path+przestrzen_nazw+'__OT_ADJA_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_ADJA_A.qml"), path+przestrzen_nazw+'__OT_ADJA_A.qml')
-                OT_ADJA_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_ADJA_A."+formatPliku, przestrzen_nazw+"__OT_ADJA_A","ogr")
-                if OT_ADJA_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_ADJA_A, False)
-                    group.addLayer(OT_ADJA_A)
-                    OT_ADJA_A.loadNamedStyle(path+przestrzen_nazw+'__OT_ADJA_A.qml')
-                    myLayerNode = root.findLayer(OT_ADJA_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_ADJA_A = None
-            progress.setValue(18)
-            if os.path.exists(path+przestrzen_nazw+'__OT_TCPN_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_TCPN_A.qml"), path+przestrzen_nazw+'__OT_TCPN_A.qml')
-                OT_TCPN_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCPN_A."+formatPliku, przestrzen_nazw+"__OT_TCPN_A","ogr")
-                if OT_TCPN_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_TCPN_A, False)
-                    group.addLayer(OT_TCPN_A)
-                    OT_TCPN_A.loadNamedStyle(path+przestrzen_nazw+'__OT_TCPN_A.qml')
-                    myLayerNode = root.findLayer(OT_TCPN_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_TCPN_A = None
-            progress.setValue(19)
-            if os.path.exists(path+przestrzen_nazw+'__OT_TCPK_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_TCPK_A.qml"), path+przestrzen_nazw+'__OT_TCPK_A.qml')
-                OT_TCPK_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_TCPK_A."+formatPliku, przestrzen_nazw+"__OT_TCPK_A","ogr")
-                if OT_TCPK_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_TCPK_A, False)
-                    group.addLayer(OT_TCPK_A)
-                    OT_TCPK_A.loadNamedStyle(path+przestrzen_nazw+'__OT_TCPK_A.qml')
-                    myLayerNode = root.findLayer(OT_TCPK_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_TCPK_A = None
-            progress.setValue(20)
-            if os.path.exists(path+przestrzen_nazw+'__OT_BUUO_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_BUUO_L.qml"), path+przestrzen_nazw+'__OT_BUUO_L.qml')
-                OT_BUUO_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_BUUO_L."+formatPliku, przestrzen_nazw+"__OT_BUUO_L","ogr")
-                if OT_BUUO_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_BUUO_L, False)
-                    group.addLayer(OT_BUUO_L)
-                    OT_BUUO_L.loadNamedStyle(path+przestrzen_nazw+'__OT_BUUO_L.qml')
-                    myLayerNode = root.findLayer(OT_BUUO_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_BUUO_L = None
-            progress.setValue(21)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTWP_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTWP_A.qml"), path+przestrzen_nazw+'__OT_PTWP_A.qml')
-                OT_PTWP_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTWP_A."+formatPliku, przestrzen_nazw+"__OT_PTWP_A","ogr")
-                if OT_PTWP_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTWP_A, False)
-                    group.addLayer(OT_PTWP_A)
-                    OT_PTWP_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTWP_A.qml')
-                    myLayerNode = root.findLayer(OT_PTWP_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTWP_A = None
-            progress.setValue(22)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SWKN_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SWKN_L.qml"), path+przestrzen_nazw+'__OT_SWKN_L.qml')
-                OT_SWKN_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SWKN_L."+formatPliku, przestrzen_nazw+"__OT_SWKN_L","ogr")
-                if OT_SWKN_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_SWKN_L, False)
-                    group.addLayer(OT_SWKN_L)
-                    OT_SWKN_L.loadNamedStyle(path+przestrzen_nazw+'__OT_SWKN_L.qml')
-                    myLayerNode = root.findLayer(OT_SWKN_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_SWKN_L = None
-            progress.setValue(23)
-            if os.path.exists(path+przestrzen_nazw+'__OT_SWRS_L.'+formatPliku):
-                copyfile(qmlPath/Path("OT_SWRS_L.qml"), path+przestrzen_nazw+'__OT_SWRS_L.qml')
-                OT_SWRS_L = QgsVectorLayer(path+przestrzen_nazw+"__OT_SWRS_L."+formatPliku, przestrzen_nazw+"__OT_SWRS_L","ogr")
-                if OT_SWRS_L.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_SWRS_L, False)
-                    group.addLayer(OT_SWRS_L)
-                    OT_SWRS_L.loadNamedStyle(path+przestrzen_nazw+'__OT_SWRS_L.qml')
-                    myLayerNode = root.findLayer(OT_SWRS_L.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_SWRS_L = None
-            progress.setValue(24)
-            if os.path.exists(path+przestrzen_nazw+'__OT_OIMK_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_OIMK_A.qml"), path+przestrzen_nazw+'__OT_OIMK_A.qml')
-                OT_OIMK_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_OIMK_A."+formatPliku, przestrzen_nazw+"__OT_OIMK_A","ogr")
-                if OT_OIMK_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_OIMK_A, False)
-                    group.addLayer(OT_OIMK_A)
-                    OT_OIMK_A.loadNamedStyle(path+przestrzen_nazw+'__OT_OIMK_A.qml')
-                    myLayerNode = root.findLayer(OT_OIMK_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_OIMK_A = None
-            progress.setValue(25)
-            if os.path.exists(path+przestrzen_nazw+'__OT_KUSC_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_KUSC_A.qml"), path+przestrzen_nazw+'__OT_KUSC_A.qml')
-                OT_KUSC_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_KUSC_A."+formatPliku, przestrzen_nazw+"__OT_KUSC_A","ogr")
-                if OT_KUSC_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_KUSC_A, False)
-                    group.addLayer(OT_KUSC_A)
-                    OT_KUSC_A.loadNamedStyle(path+przestrzen_nazw+'__OT_KUSC_A.qml')
-                    myLayerNode = root.findLayer(OT_KUSC_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_KUSC_A = None
-            progress.setValue(26)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTZB_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTZB_A.qml"), path+przestrzen_nazw+'__OT_PTZB_A.qml')
-                OT_PTZB_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTZB_A."+formatPliku, przestrzen_nazw+"__OT_PTZB_A","ogr")
-                if OT_PTZB_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTZB_A, False)
-                    group.addLayer(OT_PTZB_A)
-                    OT_PTZB_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTZB_A.qml')
-                    myLayerNode = root.findLayer(OT_PTZB_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTZB_A = None
-            progress.setValue(27)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTUT_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTUT_A.qml"), path+przestrzen_nazw+'__OT_PTUT_A.qml')
-                OT_PTUT_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTUT_A."+formatPliku, przestrzen_nazw+"__OT_PTUT_A","ogr")
-                if OT_PTUT_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTUT_A, False)
-                    group.addLayer(OT_PTUT_A)
-                    OT_PTUT_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTUT_A.qml')
-                    myLayerNode = root.findLayer(OT_PTUT_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTUT_A = None
-            progress.setValue(28)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTGN_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTGN_A.qml"), path+przestrzen_nazw+'__OT_PTGN_A.qml')
-                OT_PTGN_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTGN_A."+formatPliku, przestrzen_nazw+"__OT_PTGN_A","ogr")
-                if OT_PTGN_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTGN_A, False)
-                    group.addLayer(OT_PTGN_A)
-                    OT_PTGN_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTGN_A.qml')
-                    myLayerNode = root.findLayer(OT_PTGN_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTGN_A = None
-            progress.setValue(29)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTRK_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTRK_A.qml"), path+przestrzen_nazw+'__OT_PTRK_A.qml')
-                OT_PTRK_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTRK_A."+formatPliku, przestrzen_nazw+"__OT_PTRK_A","ogr")
-                if OT_PTRK_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTRK_A, False)
-                    group.addLayer(OT_PTRK_A)
-                    OT_PTRK_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTRK_A.qml')
-                    myLayerNode = root.findLayer(OT_PTRK_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTRK_A = None
-            progress.setValue(30)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTNZ_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTNZ_A.qml"), path+przestrzen_nazw+'__OT_PTNZ_A.qml')
-                OT_PTNZ_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTNZ_A."+formatPliku, przestrzen_nazw+"__OT_PTNZ_A","ogr")
-                if OT_PTNZ_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTNZ_A, False)
-                    group.addLayer(OT_PTNZ_A)
-                    OT_PTNZ_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTNZ_A.qml')
-                    myLayerNode = root.findLayer(OT_PTNZ_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTNZ_A = None
-            progress.setValue(31)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTLZ_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTLZ_A.qml"), path+przestrzen_nazw+'__OT_PTLZ_A.qml')
-                OT_PTLZ_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTLZ_A."+formatPliku, przestrzen_nazw+"__OT_PTLZ_A","ogr")
-                if OT_PTLZ_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTLZ_A, False)
-                    group.addLayer(OT_PTLZ_A)
-                    OT_PTLZ_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTLZ_A.qml')
-                    myLayerNode = root.findLayer(OT_PTLZ_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTLZ_A = None
-            progress.setValue(32)
-            if os.path.exists(path+przestrzen_nazw+'__OT_PTTR_A.'+formatPliku):
-                copyfile(qmlPath/Path("OT_PTTR_A.qml"), path+przestrzen_nazw+'__OT_PTTR_A.qml')
-                OT_PTTR_A = QgsVectorLayer(path+przestrzen_nazw+"__OT_PTTR_A."+formatPliku, przestrzen_nazw+"__OT_PTTR_A","ogr")
-                if OT_PTTR_A.featureCount()>0:
-                    QgsProject.instance().addMapLayer(OT_PTTR_A, False)
-                    group.addLayer(OT_PTTR_A)
-                    OT_PTTR_A.loadNamedStyle(path+przestrzen_nazw+'__OT_PTTR_A.qml')
-                    myLayerNode = root.findLayer(OT_PTTR_A.id())
-                    myLayerNode.setExpanded(False)
-                else:
-                    OT_PTTR_A = None
-            progress.setValue(33)
-            
-            time.sleep(1)
-            iface.messageBar().clearWidgets()
-    pass
+                loaded_namespace = str(
+                    child.customProperty(f"{_SETTINGS_GROUP}/namespace", "")
+                )
+            except (AttributeError, TypeError):
+                loaded_namespace = ""
+
+            try:
+                child_name = child.name()
+            except AttributeError:
+                child_name = ""
+
+            if loaded_namespace == namespace or child_name == group_name:
+                return True
+
+        return False
+
+    def _confirm_duplicate(self, namespace, group_name):
+        """Zapytaj, czy ponownie wczytać zbiór obecny już w projekcie."""
+        dialog = QMessageBox(self.iface.mainWindow())
+        dialog.setWindowTitle("Zbiór BDOO jest już wczytany")
+        dialog.setIcon(QMessageBox.Warning)
+        dialog.setText(
+            f"Zbiór BDOO {namespace} jest już wczytany do bieżącego projektu "
+            f"w grupie „{group_name}”.\n\nCzy chcesz wczytać go ponownie?"
+        )
+        load_again_button = dialog.addButton("Wczytaj ponownie", QMessageBox.AcceptRole)
+        load_again_button.setToolTip(
+            "Dodaj ten sam zbiór BDOO do projektu jako kolejną grupę."
+        )
+        cancel_button = dialog.addButton("Anuluj", QMessageBox.RejectRole)
+        cancel_button.setToolTip(
+            "Pozostaw już wczytane dane bez dodawania kolejnej kopii."
+        )
+        dialog.exec_()
+        return dialog.clickedButton() is load_again_button
+
+    def _load_dataset(self, path, przestrzen_nazw, formatPliku):
+        """Wczytaj wszystkie skonfigurowane warstwy BDOO do projektu QGIS."""
+        root = QgsProject.instance().layerTreeRoot()
+        group_name = self._group_name(przestrzen_nazw)
+
+        if self._dataset_already_loaded(root, przestrzen_nazw, group_name):
+            if not self._confirm_duplicate(przestrzen_nazw, group_name):
+                return
+
+        qml_path = self.plugin_dir / "BDOO_QML"
+        self._install_svg_symbols()
+
+        progress_message = self.iface.messageBar().createMessage(
+            "Postęp importowania BDOO..."
+        )
+        progress = QProgressBar()
+        progress.setMaximum(max(spec["progress"] for spec in LAYER_SPECS))
+        progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        progress_message.layout().addWidget(progress)
+        self.iface.messageBar().pushWidget(progress_message, Qgis.Info)
+
+        group = root.addGroup(group_name)
+        group.setCustomProperty(f"{_SETTINGS_GROUP}/namespace", przestrzen_nazw)
+        group.setExpanded(False)
+
+        group_labels = group.addGroup(f"{przestrzen_nazw} napisy")
+        group_labels.setExpanded(False)
+        group_points = group.addGroup(f"{przestrzen_nazw} znaki punktowe")
+        group_points.setExpanded(False)
+
+        target_groups = {
+            "labels": group_labels,
+            "points": group_points,
+            "main": group,
+        }
+
+        loaded_count = 0
+        current_progress = 0
+        try:
+            for spec in LAYER_SPECS:
+                layer = self._add_configured_layer(
+                    spec,
+                    path,
+                    przestrzen_nazw,
+                    formatPliku,
+                    target_groups[spec["target"]],
+                    root,
+                    qml_path,
+                )
+                if layer is not None:
+                    loaded_count += 1
+
+                if spec["progress"] != current_progress:
+                    current_progress = spec["progress"]
+                    self._set_progress(progress, current_progress)
+        finally:
+            self.iface.messageBar().clearWidgets()
+
+        if loaded_count == 0:
+            root.removeChildNode(group)
+            QMessageBox.warning(
+                self.iface.mainWindow(),
+                "BDOO",
+                "Nie wczytano żadnej warstwy BDOO. Sprawdź zawartość wskazanego źródła.",
+            )

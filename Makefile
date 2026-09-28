@@ -48,7 +48,7 @@ PY_FILES = \
 
 UI_FILES = BDOT10k_GML_SHP_loader_dialog_base.ui
 
-EXTRAS = metadata.txt icon.png
+EXTRAS = metadata.txt icon.png icon400.jpg
 
 EXTRA_DIRS =
 
