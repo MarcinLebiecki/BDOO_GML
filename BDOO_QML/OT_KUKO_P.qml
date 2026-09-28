@@ -1,72 +1,41 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="3.22.15-Białowieża" simplifyDrawingHints="0" symbologyReferenceScale="-1" minScale="100000000" simplifyLocal="1" maxScale="0" labelsEnabled="0" hasScaleBasedVisibilityFlag="0" styleCategories="Symbology|Symbology3D|Labeling|Fields|Forms|Actions|MapTips|Diagrams|AttributeTable|Rendering|CustomProperties|GeometryOptions|Relations|Temporal|Legend|Elevation|Notes" simplifyMaxScale="1" simplifyAlgorithm="0" simplifyDrawingTol="1">
-  <temporal enabled="0" fixedDuration="0" accumulate="0" startExpression="" endExpression="" limitMode="0" durationField="" startField="" mode="0" durationUnit="min" endField="">
-    <fixedRange>
-      <start></start>
-      <end></end>
-    </fixedRange>
-  </temporal>
-  <renderer-v2 symbollevels="0" enableorderby="0" referencescale="-1" forceraster="0" attr="kodKarto250k" type="categorizedSymbol">
+<qgis maxScale="0" simplifyDrawingHints="0" simplifyLocal="1" labelsEnabled="0" simplifyAlgorithm="0" simplifyDrawingTol="1" styleCategories="AllStyleCategories" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" minScale="1e+08" version="3.10.11-A Coruña" readOnly="0">
+  <flags>
+    <Identifiable>1</Identifiable>
+    <Removable>1</Removable>
+    <Searchable>1</Searchable>
+  </flags>
+  <renderer-v2 forceraster="0" type="categorizedSymbol" enableorderby="0" attr="kodKarto250k" symbollevels="0">
     <categories>
-      <category label="dworzec autobusowy" render="true" symbol="0" value="0250_142"/>
-      <category label="miejsce obslugi podroznych" render="true" symbol="1" value="0250_144"/>
-      <category label="port lotniczy" render="true" symbol="2" value="0250_147"/>
-      <category label="lotnisko wojskowe" render="true" symbol="3" value="0250_148"/>
-      <category label="lotnisko inne lub ladowisko" render="true" symbol="4" value="0250_149"/>
-      <category label="stacja kolejowa" render="true" symbol="5" value="0250_223"/>
-      <category label="port morski przeladunkowy" render="true" symbol="6" value="0250_622"/>
-      <category label="port wojskowy" render="true" symbol="7" value="0250_623"/>
-      <category label="port srodladowy" render="true" symbol="8" value="0250_624"/>
-      <category label="przystan zeglugi pasazerskiej" render="true" symbol="9" value="0250_625"/>
+      <category label="port lotniczy" symbol="0" render="true" value="0250_147"/>
+      <category label="lotnisko wojskowe" symbol="1" render="true" value="0250_148"/>
+      <category label="lotnisko inne lub ladowisko" symbol="2" render="true" value="0250_149"/>
+      <category label="stacja kolejowa" symbol="3" render="true" value="0250_223"/>
+      <category label="port handlowy" symbol="4" render="true" value="0250_622"/>
+      <category label="port wojskowy" symbol="5" render="true" value="0250_623"/>
+      <category label="port rybacki" symbol="6" render="true" value="0250_624"/>
+      <category label="przystan zeglugi pasazerskiej" symbol="7" render="true" value="0250_625"/>
     </categories>
     <symbols>
-      <symbol alpha="1" force_rhr="0" name="0" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SvgMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="color" type="QString" value="236,120,97,255"/>
-            <Option name="fixedAspectRatio" type="QString" value="0"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="name" type="QString" value="KARTO250k/0250_142.svg"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MapUnit"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MapUnit"/>
-            <Option name="parameters"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="520"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MapUnit"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="color" v="236,120,97,255"/>
-          <prop k="fixedAspectRatio" v="0"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="KARTO250k/0250_142.svg"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MapUnit"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MapUnit"/>
-          <prop k="parameters" v=""/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="520"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MapUnit"/>
-          <prop k="vertical_anchor_point" v="1"/>
+      <symbol alpha="1" name="0" type="marker" clip_to_extent="1" force_rhr="0">
+        <layer class="SvgMarker" enabled="1" locked="0" pass="0">
+          <prop v="0" k="angle"/>
+          <prop v="236,120,97,255" k="color"/>
+          <prop v="0" k="fixedAspectRatio"/>
+          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="KARTO250k/0250_147.svg" k="name"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MapUnit" k="offset_unit"/>
+          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="0" k="outline_width"/>
+          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="MapUnit" k="outline_width_unit"/>
+          <prop v="diameter" k="scale_method"/>
+          <prop v="1000" k="size"/>
+          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+          <prop v="MapUnit" k="size_unit"/>
+          <prop v="1" k="vertical_anchor_point"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>
@@ -76,53 +45,25 @@
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol alpha="1" force_rhr="0" name="1" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SvgMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="color" type="QString" value="236,120,97,255"/>
-            <Option name="fixedAspectRatio" type="QString" value="0"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="name" type="QString" value="KARTO250k/0250_144.svg"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MapUnit"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MapUnit"/>
-            <Option name="parameters"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="1000"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MapUnit"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="color" v="236,120,97,255"/>
-          <prop k="fixedAspectRatio" v="0"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="KARTO250k/0250_144.svg"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MapUnit"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MapUnit"/>
-          <prop k="parameters" v=""/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="1000"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MapUnit"/>
-          <prop k="vertical_anchor_point" v="1"/>
+      <symbol alpha="1" name="1" type="marker" clip_to_extent="1" force_rhr="0">
+        <layer class="SvgMarker" enabled="1" locked="0" pass="0">
+          <prop v="0" k="angle"/>
+          <prop v="236,120,97,255" k="color"/>
+          <prop v="0" k="fixedAspectRatio"/>
+          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="KARTO250k/0250_148.svg" k="name"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MapUnit" k="offset_unit"/>
+          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="0" k="outline_width"/>
+          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="MapUnit" k="outline_width_unit"/>
+          <prop v="diameter" k="scale_method"/>
+          <prop v="750" k="size"/>
+          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+          <prop v="MapUnit" k="size_unit"/>
+          <prop v="1" k="vertical_anchor_point"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>
@@ -132,53 +73,25 @@
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol alpha="1" force_rhr="0" name="2" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SvgMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="color" type="QString" value="236,120,97,255"/>
-            <Option name="fixedAspectRatio" type="QString" value="0"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="name" type="QString" value="KARTO250k/0250_147.svg"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MapUnit"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MapUnit"/>
-            <Option name="parameters"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="1000"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MapUnit"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="color" v="236,120,97,255"/>
-          <prop k="fixedAspectRatio" v="0"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="KARTO250k/0250_147.svg"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MapUnit"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MapUnit"/>
-          <prop k="parameters" v=""/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="1000"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MapUnit"/>
-          <prop k="vertical_anchor_point" v="1"/>
+      <symbol alpha="1" name="2" type="marker" clip_to_extent="1" force_rhr="0">
+        <layer class="SvgMarker" enabled="1" locked="0" pass="0">
+          <prop v="0" k="angle"/>
+          <prop v="83,206,26,255" k="color"/>
+          <prop v="0" k="fixedAspectRatio"/>
+          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="KARTO250k/0250_149.svg" k="name"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MapUnit" k="offset_unit"/>
+          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="0" k="outline_width"/>
+          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="MapUnit" k="outline_width_unit"/>
+          <prop v="diameter" k="scale_method"/>
+          <prop v="700" k="size"/>
+          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+          <prop v="MapUnit" k="size_unit"/>
+          <prop v="1" k="vertical_anchor_point"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>
@@ -188,53 +101,25 @@
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol alpha="1" force_rhr="0" name="3" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SvgMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="color" type="QString" value="236,120,97,255"/>
-            <Option name="fixedAspectRatio" type="QString" value="0"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="name" type="QString" value="KARTO250k/0250_148.svg"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MapUnit"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MapUnit"/>
-            <Option name="parameters"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="750"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MapUnit"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="color" v="236,120,97,255"/>
-          <prop k="fixedAspectRatio" v="0"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="KARTO250k/0250_148.svg"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MapUnit"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MapUnit"/>
-          <prop k="parameters" v=""/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="750"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MapUnit"/>
-          <prop k="vertical_anchor_point" v="1"/>
+      <symbol alpha="1" name="3" type="marker" clip_to_extent="1" force_rhr="0">
+        <layer class="SvgMarker" enabled="1" locked="0" pass="0">
+          <prop v="0" k="angle"/>
+          <prop v="81,214,240,255" k="color"/>
+          <prop v="0" k="fixedAspectRatio"/>
+          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="KARTO250k/0250_223.svg" k="name"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MapUnit" k="offset_unit"/>
+          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="0" k="outline_width"/>
+          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="MapUnit" k="outline_width_unit"/>
+          <prop v="diameter" k="scale_method"/>
+          <prop v="750" k="size"/>
+          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+          <prop v="MapUnit" k="size_unit"/>
+          <prop v="1" k="vertical_anchor_point"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>
@@ -244,53 +129,25 @@
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol alpha="1" force_rhr="0" name="4" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SvgMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="color" type="QString" value="83,206,26,255"/>
-            <Option name="fixedAspectRatio" type="QString" value="0"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="name" type="QString" value="KARTO250k/0250_149.svg"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MapUnit"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MapUnit"/>
-            <Option name="parameters"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="700"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MapUnit"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="color" v="83,206,26,255"/>
-          <prop k="fixedAspectRatio" v="0"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="KARTO250k/0250_149.svg"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MapUnit"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MapUnit"/>
-          <prop k="parameters" v=""/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="700"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MapUnit"/>
-          <prop k="vertical_anchor_point" v="1"/>
+      <symbol alpha="1" name="4" type="marker" clip_to_extent="1" force_rhr="0">
+        <layer class="SvgMarker" enabled="1" locked="0" pass="0">
+          <prop v="0" k="angle"/>
+          <prop v="168,36,233,255" k="color"/>
+          <prop v="0" k="fixedAspectRatio"/>
+          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="KARTO250k/0250_622.svg" k="name"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MapUnit" k="offset_unit"/>
+          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="0" k="outline_width"/>
+          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="MapUnit" k="outline_width_unit"/>
+          <prop v="diameter" k="scale_method"/>
+          <prop v="880" k="size"/>
+          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+          <prop v="MapUnit" k="size_unit"/>
+          <prop v="1" k="vertical_anchor_point"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>
@@ -300,53 +157,25 @@
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol alpha="1" force_rhr="0" name="5" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SvgMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="color" type="QString" value="81,214,240,255"/>
-            <Option name="fixedAspectRatio" type="QString" value="0"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="name" type="QString" value="KARTO250k/0250_223.svg"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MapUnit"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MapUnit"/>
-            <Option name="parameters"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="750"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MapUnit"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="color" v="81,214,240,255"/>
-          <prop k="fixedAspectRatio" v="0"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="KARTO250k/0250_223.svg"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MapUnit"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MapUnit"/>
-          <prop k="parameters" v=""/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="750"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MapUnit"/>
-          <prop k="vertical_anchor_point" v="1"/>
+      <symbol alpha="1" name="5" type="marker" clip_to_extent="1" force_rhr="0">
+        <layer class="SvgMarker" enabled="1" locked="0" pass="0">
+          <prop v="0" k="angle"/>
+          <prop v="168,36,233,255" k="color"/>
+          <prop v="0" k="fixedAspectRatio"/>
+          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="KARTO250k/0250_623.svg" k="name"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MapUnit" k="offset_unit"/>
+          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="0" k="outline_width"/>
+          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="MapUnit" k="outline_width_unit"/>
+          <prop v="diameter" k="scale_method"/>
+          <prop v="660" k="size"/>
+          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+          <prop v="MapUnit" k="size_unit"/>
+          <prop v="1" k="vertical_anchor_point"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>
@@ -356,53 +185,25 @@
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol alpha="1" force_rhr="0" name="6" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SvgMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="color" type="QString" value="168,36,233,255"/>
-            <Option name="fixedAspectRatio" type="QString" value="0"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="name" type="QString" value="KARTO250k/0250_622.svg"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MapUnit"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MapUnit"/>
-            <Option name="parameters"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="880"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MapUnit"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="color" v="168,36,233,255"/>
-          <prop k="fixedAspectRatio" v="0"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="KARTO250k/0250_622.svg"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MapUnit"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MapUnit"/>
-          <prop k="parameters" v=""/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="880"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MapUnit"/>
-          <prop k="vertical_anchor_point" v="1"/>
+      <symbol alpha="1" name="6" type="marker" clip_to_extent="1" force_rhr="0">
+        <layer class="SvgMarker" enabled="1" locked="0" pass="0">
+          <prop v="0" k="angle"/>
+          <prop v="168,36,233,255" k="color"/>
+          <prop v="0" k="fixedAspectRatio"/>
+          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="KARTO250k/0250_624.svg" k="name"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MapUnit" k="offset_unit"/>
+          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="0" k="outline_width"/>
+          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="MapUnit" k="outline_width_unit"/>
+          <prop v="diameter" k="scale_method"/>
+          <prop v="540" k="size"/>
+          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+          <prop v="MapUnit" k="size_unit"/>
+          <prop v="1" k="vertical_anchor_point"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>
@@ -412,165 +213,25 @@
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol alpha="1" force_rhr="0" name="7" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SvgMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="color" type="QString" value="168,36,233,255"/>
-            <Option name="fixedAspectRatio" type="QString" value="0"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="name" type="QString" value="KARTO250k/0250_623.svg"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MapUnit"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MapUnit"/>
-            <Option name="parameters"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="660"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MapUnit"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="color" v="168,36,233,255"/>
-          <prop k="fixedAspectRatio" v="0"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="KARTO250k/0250_623.svg"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MapUnit"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MapUnit"/>
-          <prop k="parameters" v=""/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="660"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MapUnit"/>
-          <prop k="vertical_anchor_point" v="1"/>
-          <data_defined_properties>
-            <Option type="Map">
-              <Option name="name" type="QString" value=""/>
-              <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
-            </Option>
-          </data_defined_properties>
-        </layer>
-      </symbol>
-      <symbol alpha="1" force_rhr="0" name="8" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SvgMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="color" type="QString" value="168,36,233,255"/>
-            <Option name="fixedAspectRatio" type="QString" value="0"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="name" type="QString" value="KARTO250k/0250_624.svg"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MapUnit"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MapUnit"/>
-            <Option name="parameters"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="540"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MapUnit"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="color" v="168,36,233,255"/>
-          <prop k="fixedAspectRatio" v="0"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="KARTO250k/0250_624.svg"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MapUnit"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MapUnit"/>
-          <prop k="parameters" v=""/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="540"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MapUnit"/>
-          <prop k="vertical_anchor_point" v="1"/>
-          <data_defined_properties>
-            <Option type="Map">
-              <Option name="name" type="QString" value=""/>
-              <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
-            </Option>
-          </data_defined_properties>
-        </layer>
-      </symbol>
-      <symbol alpha="1" force_rhr="0" name="9" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SvgMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="color" type="QString" value="168,36,233,255"/>
-            <Option name="fixedAspectRatio" type="QString" value="0"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="name" type="QString" value="KARTO250k/0250_139_2.svg"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MapUnit"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MapUnit"/>
-            <Option name="parameters"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="700"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MapUnit"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="color" v="168,36,233,255"/>
-          <prop k="fixedAspectRatio" v="0"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="name" v="KARTO250k/0250_139_2.svg"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MapUnit"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MapUnit"/>
-          <prop k="parameters" v=""/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="700"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MapUnit"/>
-          <prop k="vertical_anchor_point" v="1"/>
+      <symbol alpha="1" name="7" type="marker" clip_to_extent="1" force_rhr="0">
+        <layer class="SvgMarker" enabled="1" locked="0" pass="0">
+          <prop v="0" k="angle"/>
+          <prop v="168,36,233,255" k="color"/>
+          <prop v="0" k="fixedAspectRatio"/>
+          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="KARTO250k/0250_139_2.svg" k="name"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MapUnit" k="offset_unit"/>
+          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="0" k="outline_width"/>
+          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="MapUnit" k="outline_width_unit"/>
+          <prop v="diameter" k="scale_method"/>
+          <prop v="700" k="size"/>
+          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+          <prop v="MapUnit" k="size_unit"/>
+          <prop v="1" k="vertical_anchor_point"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>
@@ -582,55 +243,26 @@
       </symbol>
     </symbols>
     <source-symbol>
-      <symbol alpha="1" force_rhr="0" name="0" type="marker" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer class="SimpleMarker" enabled="1" pass="0" locked="0">
-          <Option type="Map">
-            <Option name="angle" type="QString" value="0"/>
-            <Option name="cap_style" type="QString" value="square"/>
-            <Option name="color" type="QString" value="190,207,80,255"/>
-            <Option name="horizontal_anchor_point" type="QString" value="1"/>
-            <Option name="joinstyle" type="QString" value="bevel"/>
-            <Option name="name" type="QString" value="circle"/>
-            <Option name="offset" type="QString" value="0,0"/>
-            <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="offset_unit" type="QString" value="MM"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
-            <Option name="outline_style" type="QString" value="solid"/>
-            <Option name="outline_width" type="QString" value="0"/>
-            <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="outline_width_unit" type="QString" value="MM"/>
-            <Option name="scale_method" type="QString" value="diameter"/>
-            <Option name="size" type="QString" value="2"/>
-            <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            <Option name="size_unit" type="QString" value="MM"/>
-            <Option name="vertical_anchor_point" type="QString" value="1"/>
-          </Option>
-          <prop k="angle" v="0"/>
-          <prop k="cap_style" v="square"/>
-          <prop k="color" v="190,207,80,255"/>
-          <prop k="horizontal_anchor_point" v="1"/>
-          <prop k="joinstyle" v="bevel"/>
-          <prop k="name" v="circle"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MM"/>
-          <prop k="outline_color" v="35,35,35,255"/>
-          <prop k="outline_style" v="solid"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="outline_width_unit" v="MM"/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="2"/>
-          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MM"/>
-          <prop k="vertical_anchor_point" v="1"/>
+      <symbol alpha="1" name="0" type="marker" clip_to_extent="1" force_rhr="0">
+        <layer class="SimpleMarker" enabled="1" locked="0" pass="0">
+          <prop v="0" k="angle"/>
+          <prop v="190,207,80,255" k="color"/>
+          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="bevel" k="joinstyle"/>
+          <prop v="circle" k="name"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MM" k="offset_unit"/>
+          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="solid" k="outline_style"/>
+          <prop v="0" k="outline_width"/>
+          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="MM" k="outline_width_unit"/>
+          <prop v="diameter" k="scale_method"/>
+          <prop v="2" k="size"/>
+          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+          <prop v="MM" k="size_unit"/>
+          <prop v="1" k="vertical_anchor_point"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>
@@ -645,98 +277,19 @@
     <sizescale/>
   </renderer-v2>
   <customproperties>
-    <Option type="Map">
-      <Option name="embeddedWidgets/count" type="QString" value="0"/>
-      <Option name="variableNames"/>
-      <Option name="variableValues"/>
-    </Option>
+    <property key="embeddedWidgets/count" value="0"/>
+    <property key="variableNames"/>
+    <property key="variableValues"/>
   </customproperties>
   <blendMode>0</blendMode>
   <featureBlendMode>0</featureBlendMode>
   <layerOpacity>1</layerOpacity>
   <SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
-    <DiagramCategory showAxis="0" direction="1" penWidth="0" height="15" rotationOffset="270" sizeScale="3x:0,0,0,0,0,0" backgroundAlpha="255" sizeType="MM" spacingUnitScale="3x:0,0,0,0,0,0" minimumSize="0" spacing="0" penAlpha="255" labelPlacementMethod="XHeight" enabled="0" maxScaleDenominator="1e+08" opacity="1" spacingUnit="MM" penColor="#000000" barWidth="5" lineSizeScale="3x:0,0,0,0,0,0" minScaleDenominator="0" width="15" diagramOrientation="Up" scaleDependency="Area" scaleBasedVisibility="0" backgroundColor="#ffffff" lineSizeType="MM">
-      <fontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
-      <attribute colorOpacity="1" label="" field="" color="#000000"/>
-      <axisSymbol>
-        <symbol alpha="1" force_rhr="0" name="" type="line" clip_to_extent="1">
-          <data_defined_properties>
-            <Option type="Map">
-              <Option name="name" type="QString" value=""/>
-              <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
-            </Option>
-          </data_defined_properties>
-          <layer class="SimpleLine" enabled="1" pass="0" locked="0">
-            <Option type="Map">
-              <Option name="align_dash_pattern" type="QString" value="0"/>
-              <Option name="capstyle" type="QString" value="square"/>
-              <Option name="customdash" type="QString" value="5;2"/>
-              <Option name="customdash_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-              <Option name="customdash_unit" type="QString" value="MM"/>
-              <Option name="dash_pattern_offset" type="QString" value="0"/>
-              <Option name="dash_pattern_offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-              <Option name="dash_pattern_offset_unit" type="QString" value="MM"/>
-              <Option name="draw_inside_polygon" type="QString" value="0"/>
-              <Option name="joinstyle" type="QString" value="bevel"/>
-              <Option name="line_color" type="QString" value="35,35,35,255"/>
-              <Option name="line_style" type="QString" value="solid"/>
-              <Option name="line_width" type="QString" value="0.26"/>
-              <Option name="line_width_unit" type="QString" value="MM"/>
-              <Option name="offset" type="QString" value="0"/>
-              <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-              <Option name="offset_unit" type="QString" value="MM"/>
-              <Option name="ring_filter" type="QString" value="0"/>
-              <Option name="trim_distance_end" type="QString" value="0"/>
-              <Option name="trim_distance_end_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-              <Option name="trim_distance_end_unit" type="QString" value="MM"/>
-              <Option name="trim_distance_start" type="QString" value="0"/>
-              <Option name="trim_distance_start_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-              <Option name="trim_distance_start_unit" type="QString" value="MM"/>
-              <Option name="tweak_dash_pattern_on_corners" type="QString" value="0"/>
-              <Option name="use_custom_dash" type="QString" value="0"/>
-              <Option name="width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
-            </Option>
-            <prop k="align_dash_pattern" v="0"/>
-            <prop k="capstyle" v="square"/>
-            <prop k="customdash" v="5;2"/>
-            <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-            <prop k="customdash_unit" v="MM"/>
-            <prop k="dash_pattern_offset" v="0"/>
-            <prop k="dash_pattern_offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-            <prop k="dash_pattern_offset_unit" v="MM"/>
-            <prop k="draw_inside_polygon" v="0"/>
-            <prop k="joinstyle" v="bevel"/>
-            <prop k="line_color" v="35,35,35,255"/>
-            <prop k="line_style" v="solid"/>
-            <prop k="line_width" v="0.26"/>
-            <prop k="line_width_unit" v="MM"/>
-            <prop k="offset" v="0"/>
-            <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-            <prop k="offset_unit" v="MM"/>
-            <prop k="ring_filter" v="0"/>
-            <prop k="trim_distance_end" v="0"/>
-            <prop k="trim_distance_end_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-            <prop k="trim_distance_end_unit" v="MM"/>
-            <prop k="trim_distance_start" v="0"/>
-            <prop k="trim_distance_start_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-            <prop k="trim_distance_start_unit" v="MM"/>
-            <prop k="tweak_dash_pattern_on_corners" v="0"/>
-            <prop k="use_custom_dash" v="0"/>
-            <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-            <data_defined_properties>
-              <Option type="Map">
-                <Option name="name" type="QString" value=""/>
-                <Option name="properties"/>
-                <Option name="type" type="QString" value="collection"/>
-              </Option>
-            </data_defined_properties>
-          </layer>
-        </symbol>
-      </axisSymbol>
+    <DiagramCategory width="15" minScaleDenominator="0" lineSizeType="MM" opacity="1" barWidth="5" scaleBasedVisibility="0" diagramOrientation="Up" lineSizeScale="3x:0,0,0,0,0,0" labelPlacementMethod="XHeight" sizeScale="3x:0,0,0,0,0,0" minimumSize="0" backgroundColor="#ffffff" sizeType="MM" enabled="0" height="15" rotationOffset="270" backgroundAlpha="255" penWidth="0" scaleDependency="Area" maxScaleDenominator="1e+08" penAlpha="255" penColor="#000000">
+      <fontProperties style="" description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0"/>
     </DiagramCategory>
   </SingleCategoryDiagramRenderer>
-  <DiagramLayerSettings obstacle="0" showAll="1" dist="0" linePlacementFlags="18" placement="0" zIndex="0" priority="0">
+  <DiagramLayerSettings linePlacementFlags="18" obstacle="0" zIndex="0" placement="0" priority="0" showAll="1" dist="0">
     <properties>
       <Option type="Map">
         <Option name="name" type="QString" value=""/>
@@ -745,98 +298,96 @@
       </Option>
     </properties>
   </DiagramLayerSettings>
-  <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+  <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
     <activeChecks/>
     <checkConfiguration/>
   </geometryOptions>
-  <legend showLabelLegend="0" type="default-vector"/>
-  <referencedLayers/>
   <fieldConfiguration>
-    <field configurationFlags="None" name="gml_id">
+    <field name="gml_id">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="lokalnyId">
+    <field name="lokalnyId">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="przestrzenNazw">
+    <field name="przestrzenNazw">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="wersja">
+    <field name="wersja">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="poczatekWersjiObiektu">
+    <field name="poczatekWersjiObiektu">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="oznaczenieZmiany">
+    <field name="oznaczenieZmiany">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="zrodloDanychGeometrycznych">
+    <field name="zrodloDanychGeometrycznych">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="kodKarto250k">
+    <field name="kodKarto250k">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="rodzaj">
+    <field name="rodzaj">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="typLotniska">
+    <field name="typLotniska">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="nazwa">
+    <field name="informacjaDodatkowa">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="typPortu">
+    <field name="typPortu">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="skrotKartograficzny">
+    <field name="nazwa">
       <editWidget type="TextEdit">
         <config>
           <Option/>
@@ -845,20 +396,22 @@
     </field>
   </fieldConfiguration>
   <aliases>
-    <alias field="gml_id" name="" index="0"/>
-    <alias field="lokalnyId" name="" index="1"/>
-    <alias field="przestrzenNazw" name="" index="2"/>
-    <alias field="wersja" name="" index="3"/>
-    <alias field="poczatekWersjiObiektu" name="" index="4"/>
-    <alias field="oznaczenieZmiany" name="" index="5"/>
-    <alias field="zrodloDanychGeometrycznych" name="" index="6"/>
-    <alias field="kodKarto250k" name="" index="7"/>
-    <alias field="rodzaj" name="" index="8"/>
-    <alias field="typLotniska" name="" index="9"/>
-    <alias field="nazwa" name="" index="10"/>
-    <alias field="typPortu" name="" index="11"/>
-    <alias field="skrotKartograficzny" name="" index="12"/>
+    <alias index="0" field="gml_id" name=""/>
+    <alias index="1" field="lokalnyId" name=""/>
+    <alias index="2" field="przestrzenNazw" name=""/>
+    <alias index="3" field="wersja" name=""/>
+    <alias index="4" field="poczatekWersjiObiektu" name=""/>
+    <alias index="5" field="oznaczenieZmiany" name=""/>
+    <alias index="6" field="zrodloDanychGeometrycznych" name=""/>
+    <alias index="7" field="kodKarto250k" name=""/>
+    <alias index="8" field="rodzaj" name=""/>
+    <alias index="9" field="typLotniska" name=""/>
+    <alias index="10" field="informacjaDodatkowa" name=""/>
+    <alias index="11" field="typPortu" name=""/>
+    <alias index="12" field="nazwa" name=""/>
   </aliases>
+  <excludeAttributesWMS/>
+  <excludeAttributesWFS/>
   <defaults>
     <default expression="" field="gml_id" applyOnUpdate="0"/>
     <default expression="" field="lokalnyId" applyOnUpdate="0"/>
@@ -870,60 +423,60 @@
     <default expression="" field="kodKarto250k" applyOnUpdate="0"/>
     <default expression="" field="rodzaj" applyOnUpdate="0"/>
     <default expression="" field="typLotniska" applyOnUpdate="0"/>
-    <default expression="" field="nazwa" applyOnUpdate="0"/>
+    <default expression="" field="informacjaDodatkowa" applyOnUpdate="0"/>
     <default expression="" field="typPortu" applyOnUpdate="0"/>
-    <default expression="" field="skrotKartograficzny" applyOnUpdate="0"/>
+    <default expression="" field="nazwa" applyOnUpdate="0"/>
   </defaults>
   <constraints>
-    <constraint field="gml_id" unique_strength="0" notnull_strength="1" constraints="1" exp_strength="0"/>
-    <constraint field="lokalnyId" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="przestrzenNazw" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="wersja" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="poczatekWersjiObiektu" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="oznaczenieZmiany" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="zrodloDanychGeometrycznych" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="kodKarto250k" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="rodzaj" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="typLotniska" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="nazwa" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="typPortu" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
-    <constraint field="skrotKartograficzny" unique_strength="0" notnull_strength="0" constraints="0" exp_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="1" field="gml_id" notnull_strength="1"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="lokalnyId" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="przestrzenNazw" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="wersja" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="poczatekWersjiObiektu" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="oznaczenieZmiany" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="zrodloDanychGeometrycznych" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="kodKarto250k" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="rodzaj" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="typLotniska" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="informacjaDodatkowa" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="typPortu" notnull_strength="0"/>
+    <constraint unique_strength="0" exp_strength="0" constraints="0" field="nazwa" notnull_strength="0"/>
   </constraints>
   <constraintExpressions>
-    <constraint field="gml_id" exp="" desc=""/>
-    <constraint field="lokalnyId" exp="" desc=""/>
-    <constraint field="przestrzenNazw" exp="" desc=""/>
-    <constraint field="wersja" exp="" desc=""/>
-    <constraint field="poczatekWersjiObiektu" exp="" desc=""/>
-    <constraint field="oznaczenieZmiany" exp="" desc=""/>
-    <constraint field="zrodloDanychGeometrycznych" exp="" desc=""/>
-    <constraint field="kodKarto250k" exp="" desc=""/>
-    <constraint field="rodzaj" exp="" desc=""/>
-    <constraint field="typLotniska" exp="" desc=""/>
-    <constraint field="nazwa" exp="" desc=""/>
-    <constraint field="typPortu" exp="" desc=""/>
-    <constraint field="skrotKartograficzny" exp="" desc=""/>
+    <constraint desc="" field="gml_id" exp=""/>
+    <constraint desc="" field="lokalnyId" exp=""/>
+    <constraint desc="" field="przestrzenNazw" exp=""/>
+    <constraint desc="" field="wersja" exp=""/>
+    <constraint desc="" field="poczatekWersjiObiektu" exp=""/>
+    <constraint desc="" field="oznaczenieZmiany" exp=""/>
+    <constraint desc="" field="zrodloDanychGeometrycznych" exp=""/>
+    <constraint desc="" field="kodKarto250k" exp=""/>
+    <constraint desc="" field="rodzaj" exp=""/>
+    <constraint desc="" field="typLotniska" exp=""/>
+    <constraint desc="" field="informacjaDodatkowa" exp=""/>
+    <constraint desc="" field="typPortu" exp=""/>
+    <constraint desc="" field="nazwa" exp=""/>
   </constraintExpressions>
   <expressionfields/>
   <attributeactions>
     <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
   </attributeactions>
-  <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+  <attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
     <columns>
-      <column hidden="0" name="gml_id" width="-1" type="field"/>
-      <column hidden="0" name="lokalnyId" width="-1" type="field"/>
-      <column hidden="0" name="przestrzenNazw" width="-1" type="field"/>
-      <column hidden="0" name="poczatekWersjiObiektu" width="-1" type="field"/>
-      <column hidden="0" name="wersja" width="-1" type="field"/>
-      <column hidden="0" name="oznaczenieZmiany" width="-1" type="field"/>
-      <column hidden="0" name="zrodloDanychGeometrycznych" width="-1" type="field"/>
-      <column hidden="0" name="kodKarto250k" width="-1" type="field"/>
-      <column hidden="0" name="rodzaj" width="-1" type="field"/>
-      <column hidden="0" name="typLotniska" width="-1" type="field"/>
-      <column hidden="0" name="nazwa" width="-1" type="field"/>
-      <column hidden="0" name="typPortu" width="-1" type="field"/>
-      <column hidden="0" name="skrotKartograficzny" width="-1" type="field"/>
-      <column hidden="1" width="-1" type="actions"/>
+      <column width="-1" hidden="0" name="gml_id" type="field"/>
+      <column width="-1" hidden="0" name="lokalnyId" type="field"/>
+      <column width="-1" hidden="0" name="przestrzenNazw" type="field"/>
+      <column width="-1" hidden="0" name="poczatekWersjiObiektu" type="field"/>
+      <column width="-1" hidden="0" name="wersja" type="field"/>
+      <column width="-1" hidden="0" name="oznaczenieZmiany" type="field"/>
+      <column width="-1" hidden="0" name="zrodloDanychGeometrycznych" type="field"/>
+      <column width="-1" hidden="0" name="kodKarto250k" type="field"/>
+      <column width="-1" hidden="0" name="rodzaj" type="field"/>
+      <column width="-1" hidden="0" name="typLotniska" type="field"/>
+      <column width="-1" hidden="0" name="nazwa" type="field"/>
+      <column width="-1" hidden="0" name="typPortu" type="field"/>
+      <column width="-1" hidden="1" type="actions"/>
+      <column width="-1" hidden="0" name="informacjaDodatkowa" type="field"/>
     </columns>
   </attributetableconfig>
   <conditionalstyles>
@@ -957,6 +510,7 @@ def my_form_open(dialog, layer, feature):
   <editable>
     <field name="czyObiektBDOO" editable="1"/>
     <field name="gml_id" editable="1"/>
+    <field name="informacjaDodatkowa" editable="1"/>
     <field name="kodKarto250k" editable="1"/>
     <field name="lokalnyId" editable="1"/>
     <field name="nazwa" editable="1"/>
@@ -991,58 +545,44 @@ def my_form_open(dialog, layer, feature):
     <field name="zrodloDanychGeometrycznych" editable="1"/>
   </editable>
   <labelOnTop>
-    <field labelOnTop="0" name="czyObiektBDOO"/>
-    <field labelOnTop="0" name="gml_id"/>
-    <field labelOnTop="0" name="kodKarto250k"/>
-    <field labelOnTop="0" name="lokalnyId"/>
-    <field labelOnTop="0" name="nazwa"/>
-    <field labelOnTop="0" name="oznaczenieZmiany"/>
-    <field labelOnTop="0" name="poczatekWersjiObiektu"/>
-    <field labelOnTop="0" name="przestrzenNazw"/>
-    <field labelOnTop="0" name="rodzaj"/>
-    <field labelOnTop="0" name="skrotKartograficzny"/>
-    <field labelOnTop="0" name="typLotniska"/>
-    <field labelOnTop="0" name="typPortu"/>
-    <field labelOnTop="0" name="wersja"/>
-    <field labelOnTop="0" name="wersjaId"/>
-    <field labelOnTop="0" name="x_aktualnoscA"/>
-    <field labelOnTop="0" name="x_aktualnoscG"/>
-    <field labelOnTop="0" name="x_dataUtworzenia"/>
-    <field labelOnTop="0" name="x_informDodatkowa"/>
-    <field labelOnTop="0" name="x_katDoklGeom"/>
-    <field labelOnTop="0" name="x_katIstnienia"/>
-    <field labelOnTop="0" name="x_kod"/>
-    <field labelOnTop="0" name="x_kodKarto1000k"/>
-    <field labelOnTop="0" name="x_kodKarto100k"/>
-    <field labelOnTop="0" name="x_kodKarto10k"/>
-    <field labelOnTop="0" name="x_kodKarto250k"/>
-    <field labelOnTop="0" name="x_kodKarto25k"/>
-    <field labelOnTop="0" name="x_kodKarto500k"/>
-    <field labelOnTop="0" name="x_kodKarto50k"/>
-    <field labelOnTop="0" name="x_rodzajReprGeom"/>
-    <field labelOnTop="0" name="x_skrKarto"/>
-    <field labelOnTop="0" name="x_uwagi"/>
-    <field labelOnTop="0" name="x_zrodloDanychA"/>
-    <field labelOnTop="0" name="x_zrodloDanychG"/>
-    <field labelOnTop="0" name="zrodloDanychGeometrycznych"/>
+    <field name="czyObiektBDOO" labelOnTop="0"/>
+    <field name="gml_id" labelOnTop="0"/>
+    <field name="informacjaDodatkowa" labelOnTop="0"/>
+    <field name="kodKarto250k" labelOnTop="0"/>
+    <field name="lokalnyId" labelOnTop="0"/>
+    <field name="nazwa" labelOnTop="0"/>
+    <field name="oznaczenieZmiany" labelOnTop="0"/>
+    <field name="poczatekWersjiObiektu" labelOnTop="0"/>
+    <field name="przestrzenNazw" labelOnTop="0"/>
+    <field name="rodzaj" labelOnTop="0"/>
+    <field name="skrotKartograficzny" labelOnTop="0"/>
+    <field name="typLotniska" labelOnTop="0"/>
+    <field name="typPortu" labelOnTop="0"/>
+    <field name="wersja" labelOnTop="0"/>
+    <field name="wersjaId" labelOnTop="0"/>
+    <field name="x_aktualnoscA" labelOnTop="0"/>
+    <field name="x_aktualnoscG" labelOnTop="0"/>
+    <field name="x_dataUtworzenia" labelOnTop="0"/>
+    <field name="x_informDodatkowa" labelOnTop="0"/>
+    <field name="x_katDoklGeom" labelOnTop="0"/>
+    <field name="x_katIstnienia" labelOnTop="0"/>
+    <field name="x_kod" labelOnTop="0"/>
+    <field name="x_kodKarto1000k" labelOnTop="0"/>
+    <field name="x_kodKarto100k" labelOnTop="0"/>
+    <field name="x_kodKarto10k" labelOnTop="0"/>
+    <field name="x_kodKarto250k" labelOnTop="0"/>
+    <field name="x_kodKarto25k" labelOnTop="0"/>
+    <field name="x_kodKarto500k" labelOnTop="0"/>
+    <field name="x_kodKarto50k" labelOnTop="0"/>
+    <field name="x_rodzajReprGeom" labelOnTop="0"/>
+    <field name="x_skrKarto" labelOnTop="0"/>
+    <field name="x_uwagi" labelOnTop="0"/>
+    <field name="x_zrodloDanychA" labelOnTop="0"/>
+    <field name="x_zrodloDanychG" labelOnTop="0"/>
+    <field name="zrodloDanychGeometrycznych" labelOnTop="0"/>
   </labelOnTop>
-  <reuseLastValue>
-    <field reuseLastValue="0" name="gml_id"/>
-    <field reuseLastValue="0" name="kodKarto250k"/>
-    <field reuseLastValue="0" name="lokalnyId"/>
-    <field reuseLastValue="0" name="nazwa"/>
-    <field reuseLastValue="0" name="oznaczenieZmiany"/>
-    <field reuseLastValue="0" name="poczatekWersjiObiektu"/>
-    <field reuseLastValue="0" name="przestrzenNazw"/>
-    <field reuseLastValue="0" name="rodzaj"/>
-    <field reuseLastValue="0" name="skrotKartograficzny"/>
-    <field reuseLastValue="0" name="typLotniska"/>
-    <field reuseLastValue="0" name="typPortu"/>
-    <field reuseLastValue="0" name="wersja"/>
-    <field reuseLastValue="0" name="zrodloDanychGeometrycznych"/>
-  </reuseLastValue>
-  <dataDefinedFieldProperties/>
   <widgets/>
+  <previewExpression>"gml_id"</previewExpression>
   <mapTip></mapTip>
   <layerGeometryType>0</layerGeometryType>
 </qgis>
